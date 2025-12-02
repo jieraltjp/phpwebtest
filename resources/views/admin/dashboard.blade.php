@@ -3,136 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员后台 - RAKUMART × 1688</title>
+    <title>管理员后台 - 雅虎B2B和风管理平台</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="/css/japanese-effects.css" rel="stylesheet">
     <style>
         :root {
-            --admin-primary: #2c3e50;
-            --admin-secondary: #34495e;
-            --admin-light: #ecf0f1;
+            --admin-primary: #1a1a1a;
+            --admin-secondary: #2C2C2C;
+            --admin-light: #FFF8F0;
             --admin-success: #27ae60;
             --admin-warning: #f39c12;
-            --admin-danger: #e74c3c;
+            --admin-danger: #C00000;
             --admin-info: #3498db;
+            --gold-accent: #D4AF37;
+            --sakura-pink: #FFB7C5;
+            --bamboo-green: #4A7C59;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--admin-light);
             margin: 0;
             padding: 0;
+            color: var(--admin-secondary);
+            line-height: 1.6;
         }
 
-        /* 管理员顶部导航栏 */
+        /* 管理员专用和风背景 */
+        .admin-pattern {
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(26, 26, 26, 0.02) 35px, rgba(26, 26, 26, 0.02) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(212, 175, 55, 0.02) 35px, rgba(212, 175, 55, 0.02) 70px);
+        }
+
+        /* 高端管理员顶部导航栏 */
         .admin-navbar {
-            background-color: var(--admin-primary);
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
             color: white;
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-navbar::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--admin-danger), var(--gold-accent), var(--admin-info));
         }
 
         .admin-logo {
-            font-size: 20px;
-            font-weight: bold;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 22px;
+            font-weight: 700;
             color: white;
             text-decoration: none;
+            position: relative;
+        }
+
+        .admin-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold-accent);
+            transition: width 0.3s ease;
+        }
+
+        .admin-logo:hover::after {
+            width: 100%;
         }
 
         .admin-logo span {
-            color: #ff6a00;
+            color: var(--gold-accent);
         }
 
         .admin-user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             color: white;
         }
 
-        /* 管理员侧边栏 */
-        .admin-sidebar {
-            background-color: var(--admin-secondary);
-            min-height: calc(100vh - 70px);
-            color: white;
-            padding: 20px 0;
-        }
-
-        .admin-sidebar-item {
-            padding: 12px 20px;
-            color: #bdc3c7;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .admin-sidebar-item:hover {
-            background-color: var(--admin-primary);
-            color: white;
-        }
-
-        .admin-sidebar-item.active {
-            background-color: var(--admin-primary);
-            color: white;
-            border-left-color: var(--admin-info);
-        }
-
-        .admin-sidebar-group {
-            margin-top: 20px;
-        }
-
-        .admin-sidebar-group-title {
-            font-weight: bold;
-            color: #95a5a6;
-            padding: 10px 20px 5px;
+        .admin-badge {
+            background: var(--gold-accent);
+            color: var(--admin-primary);
+            padding: 5px 12px;
+            border-radius: 15px;
             font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
+        /* 高端管理员侧边栏 */
+        .admin-sidebar {
+            background: linear-gradient(180deg, var(--admin-secondary) 0%, #1a1a1a 100%);
+            min-height: calc(100vh - 85px);
+            color: white;
+            padding: 30px 0;
+            position: relative;
+        }
+
+        .admin-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--admin-danger), var(--gold-accent), var(--admin-info));
+        }
+
+        .admin-sidebar-item {
+            padding: 15px 25px;
+            color: #bdc3c7;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .admin-sidebar-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(180deg, var(--admin-danger), var(--gold-accent));
+            transition: width 0.4s ease;
+        }
+
+        .admin-sidebar-item:hover {
+            background: rgba(192, 0, 0, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .admin-sidebar-item:hover::before {
+            width: 4px;
+        }
+
+        .admin-sidebar-item.active {
+            background: rgba(192, 0, 0, 0.2);
+            color: white;
+            border-left-color: var(--gold-accent);
+        }
+
+        .admin-sidebar-item.active::before {
+            width: 4px;
+        }
+
+        .admin-sidebar-item i {
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar-item:hover i {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .admin-sidebar-group {
+            margin-top: 30px;
+        }
+
+        .admin-sidebar-group-title {
+            font-weight: 700;
+            color: var(--gold-accent);
+            padding: 10px 25px 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .admin-sidebar-group-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25px;
+            right: 25px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--admin-danger), var(--gold-accent));
+        }
+
         .admin-main-content {
-            padding: 20px;
+            padding: 30px;
+            background: var(--admin-light);
+            min-height: calc(100vh - 85px);
         }
 
         .admin-page-header {
-            background-color: white;
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--admin-info);
+            background: linear-gradient(135deg, white 0%, var(--admin-light) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--admin-danger), var(--gold-accent), var(--admin-info));
+        }
+
+        .admin-page-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--admin-secondary);
+            margin-bottom: 10px;
+        }
+
+        .admin-page-subtitle {
+            color: var(--admin-secondary);
+            opacity: 0.7;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .admin-stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
         .admin-stat-card {
-            background-color: white;
-            border-radius: 6px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-top: 3px solid var(--admin-info);
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--admin-info), var(--admin-danger));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .admin-stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .admin-stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
 
-        .admin-stat-card.success {
-            border-top-color: var(--admin-success);
+        .admin-stat-card.success::before {
+            background: linear-gradient(90deg, var(--admin-success), var(--bamboo-green));
         }
 
-        .admin-stat-card.warning {
-            border-top-color: var(--admin-warning);
+        .admin-stat-card.warning::before {
+            background: linear-gradient(90deg, var(--admin-warning), #e67e22);
+        }
+
+        .admin-stat-card.danger::before {
+            background: linear-gradient(90deg, var(--admin-danger), #c0392b);
         }
 
         .admin-stat-card.danger {
@@ -221,30 +383,31 @@
         }
     </style>
 </head>
-<body>
-    <!-- 管理员顶部导航栏 -->
+<body class="admin-pattern">
+    <!-- 高端管理员顶部导航栏 -->
     <nav class="admin-navbar">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-md-3">
-                    <a href="/admin" class="admin-logo">
-                        <i class="bi bi-shield-check me-2"></i>RAKUMART <span>× 1688</span> 管理后台
+                    <a href="/" class="admin-logo">
+                        雅虎B2B <span>× 和风管理</span>
                     </a>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-6">
+                    <div class="text-center">
+                        <span class="admin-badge">管理员控制台</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="admin-user-info justify-content-end">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-bell"></i>
-                            <span>通知</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="https://via.placeholder.com/32x32" alt="管理员头像" class="rounded-circle">
-                            <span>管理员 (ID: ADMIN001)</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="/" class="text-decoration-none text-white">
-                                <i class="bi bi-house-door me-1"></i>返回前台
-                            </a>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--admin-danger), var(--gold-accent)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                管
+                            </div>
+                            <div>
+                                <div style="color: white; font-weight: 600;">系统管理员</div>
+                                <div style="color: #bdc3c7; font-size: 12px;">超级权限</div>
+                            </div>
                         </div>
                     </div>
                 </div>
