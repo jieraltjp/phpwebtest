@@ -380,6 +380,23 @@
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            /* 强制固定样式，防止被外部动效影响 */
+            transform: none !important;
+            will-change: auto;
+        }
+
+        /* 图表Canvas容器强制样式 */
+        .admin-chart-container canvas {
+            transform: none !important;
+            position: relative !important;
+            max-height: 300px;
+        }
+
+        /* 防止任何transform影响图表 */
+        .admin-chart-container *,
+        .admin-chart-container *::before,
+        .admin-chart-container *::after {
+            transform: none !important;
         }
     </style>
 </head>
@@ -650,6 +667,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/japanese-interactions.js"></script>
     <script>
         // API 配置
         const API_BASE = 'http://localhost:8000/api';
@@ -689,65 +707,139 @@
 
         // 初始化图表
         function initCharts() {
-            // 订单趋势图
-            const orderCtx = document.getElementById('orderChart').getContext('2d');
-            new Chart(orderCtx, {
-                type: 'line',
-                data: {
-                    labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                    datasets: [{
-                        label: '订单数量',
-                        data: [65, 78, 90, 120, 156, 189, 234, 267, 298, 345, 398, 456],
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+            // 延迟初始化，确保DOM完全加载
+            setTimeout(() => {
+                try {
+                    // 订单趋势图
+                    const orderCtx = document.getElementById('orderChart');
+                    if (orderCtx) {
+                        orderChart = new Chart(orderCtx.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                                datasets: [{
+                                    label: '订单数量',
+                                    data: [65, 78, 90, 120, 156, 189, 234, 267, 298, 345, 398, 456],
+                                    borderColor: '#3498db',
+                                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                                    tension: 0.4,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                animation: {
+                                    duration: 1000,
+                                    easing: 'easeInOutQuart'
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        grid: {
+                                            color: 'rgba(0, 0, 0, 0.05)'
+                                        },
+                                        ticks: {
+                                            precision: 0
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                interaction: {
+                                    intersect: false,
+                                    mode: 'index'
+                                }
+                            }
+                        });
                     }
-                }
-            });
 
-            // 订单状态分布图
-            const statusCtx = document.getElementById('statusChart').getContext('2d');
-            new Chart(statusCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['待处理', '处理中', '已发货', '已完成', '已取消'],
-                    datasets: [{
-                        data: [23, 45, 67, 89, 12],
-                        backgroundColor: [
-                            '#f39c12',
-                            '#3498db',
-                            '#2ecc71',
-                            '#27ae60',
-                            '#e74c3c'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+                    // 订单状态分布图
+                    const statusCtx = document.getElementById('statusChart');
+                    if (statusCtx) {
+                        statusChart = new Chart(statusCtx.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['待处理', '处理中', '已发货', '已完成', '已取消'],
+                                datasets: [{
+                                    data: [23, 45, 67, 89, 12],
+                                    backgroundColor: [
+                                        '#f39c12',
+                                        '#3498db',
+                                        '#2ecc71',
+                                        '#27ae60',
+                                        '#e74c3c'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                animation: {
+                                    animateRotate: true,
+                                    animateScale: true,
+                                    duration: 1000,
+                                    easing: 'easeInOutQuart'
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 15,
+                                            font: {
+                                                size: 12
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('管理员后台图表初始化失败:', error);
+                }
+            }, 500);
+        }
+
+        // 图表保护函数 - 确保图表不被外部样式影响
+        function protectAdminCharts() {
+            const chartContainers = document.querySelectorAll('.admin-chart-container');
+            chartContainers.forEach(container => {
+                // 重置任何可能影响图表的样式
+                container.style.transform = 'none';
+                container.style.position = 'relative';
+                
+                // 保护canvas元素
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.transform = 'none';
+                    canvas.style.position = 'relative';
+                    
+                    // 如果图表已存在，强制更新
+                    if (canvas.chart) {
+                        canvas.chart.update('none');
                     }
                 }
             });
         }
+
+        // 定期保护图表
+        setInterval(protectAdminCharts, 1000);
+
+        // 页面可见性变化时保护图表
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                setTimeout(protectAdminCharts, 100);
+            }
+        });
 
         // 侧边栏点击事件
         document.querySelectorAll('.admin-sidebar-item').forEach(item => {
