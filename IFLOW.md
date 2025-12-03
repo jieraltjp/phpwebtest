@@ -21,9 +21,11 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 ## 项目概述
 
-这是一个基于 Laravel 12 框架开发的高端 B2B 采购门户系统，为雅虎客户提供完整的阿里巴巴商品采购功能。项目采用日式设计美学，包含 RESTful API、用户仪表板、管理后台、Swagger 文档和精美的和风首页。
+这是一个基于 Laravel 12 框架开发的高端 B2B 采购门户系统，为雅虎客户提供完整的阿里巴巴商品采购功能。项目采用日式设计美学，包含 RESTful API、用户仪表板、管理后台、Swagger 文档、询价系统和精美的和风首页。
 
 **设计特色**：高端大气上档次，融合日本传统美学元素（樱花、和纸、墨黑、金色点缀），提供沉浸式的用户体验。
+
+**项目阶段**：MVP完成 → 产品优化期，已完成多角色改进分析中的高优先级技术改进。
 
 ## 技术栈
 
@@ -36,6 +38,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - **图表库**: Chart.js
 - **API 文档**: Swagger/OpenAPI 3.0
 - **测试框架**: PHPUnit
+- **异常处理**: 全局异常处理器
+- **响应标准化**: ApiResponseService
 
 ## 项目结构
 
@@ -43,17 +47,34 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 my-mbxj/
 ├── app/
 │   ├── Http/Controllers/
-│   │   ├── Api/              # API 控制器 (认证、产品、订单)
+│   │   ├── Api/              # API 控制器
+│   │   │   ├── AuthController.php      # 认证控制器
+│   │   │   ├── InquiryController.php   # 询价控制器 (新增)
+│   │   │   ├── OrderController.php      # 订单控制器
+│   │   │   └── ProductController.php    # 产品控制器
 │   │   ├── Admin/            # 管理员控制器
-│   │   ├── DashboardController.php
-│   │   └── SwaggerController.php
-│   ├── Models/               # 数据模型 (User, Product, Order, Shipment, OrderItem)
-│   └── Providers/
+│   │   │   └── AdminController.php     # 管理员控制器
+│   │   ├── DashboardController.php     # 仪表板控制器
+│   │   └── SwaggerController.php       # Swagger文档控制器
+│   ├── Models/               # 数据模型
+│   │   ├── User.php                  # 用户模型
+│   │   ├── Product.php               # 产品模型
+│   │   ├── Order.php                 # 订单模型
+│   │   ├── OrderItem.php             # 订单项模型
+│   │   ├── Shipment.php              # 物流模型
+│   │   └── Inquiry.php               # 询价模型 (新增)
+│   ├── Services/            # 服务层 (新增)
+│   │   └── ApiResponseService.php     # API响应标准化服务
+│   ├── Exceptions/          # 异常处理 (新增)
+│   │   └── Handler.php               # 全局异常处理器
+│   └── Providers/           # 服务提供者
 ├── config/
 │   ├── jwt.php              # JWT 配置
 │   └── swagger.php          # Swagger 配置
 ├── database/
 │   ├── migrations/          # 数据库迁移文件
+│   │   ├── 2025_12_03_135034_create_inquiries_table.php  # 询价表迁移 (新增)
+│   │   └── ...               # 其他迁移文件
 │   └── seeders/            # 测试数据填充
 ├── resources/
 │   ├── views/
@@ -74,7 +95,7 @@ my-mbxj/
 │       └── japanese-interactions.js # 和风交互库
 ├── routes/
 │   ├── api.php              # API 路由
-│   └── web.php              # Web 路由
+│   └── web.php              # Web 路由 (已优化)
 └── openspec/                # 规格说明文档
 ```
 
@@ -96,6 +117,9 @@ npm run build
 # 填充测试数据
 php artisan db:seed --class=ProductSeeder
 php artisan db:seed --class=UserSeeder
+
+# 运行新的询价表迁移
+php artisan migrate
 ```
 
 ### 开发服务器
@@ -122,6 +146,12 @@ php artisan pint
 
 # 前端生产构建
 npm run build
+
+# 清除缓存 (调试用)
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
 ```
 
 ## 核心功能模块
@@ -131,6 +161,7 @@ npm run build
 - 令牌刷新机制
 - 用户信息获取
 - 测试账户: `testuser` / `password123`
+- 全局异常处理保护
 
 ### 2. 产品管理
 - 产品列表查询 (分页、筛选、搜索)
@@ -146,7 +177,14 @@ npm run build
 - 订单历史查询
 - 订单筛选和搜索
 
-### 4. 用户界面系统
+### 4. 询价系统 🆕
+- 询价创建和提交
+- 询价状态管理 (待处理/已报价/已接受/已拒绝/已过期)
+- 询价历史查询
+- 报价管理和过期控制
+- 联系信息管理
+
+### 5. 用户界面系统
 
 #### 用户仪表板 (`/dashboard`)
 - **12个状态指示器**：实时数据展示
@@ -180,7 +218,7 @@ npm run build
 - 响应式布局
 - SEO 优化
 
-### 5. API 文档系统
+### 6. API 文档系统
 - Swagger UI 界面 (`/docs`)
 - OpenAPI 3.0 规范 (`/api/openapi`)
 - 交互式 API 测试
@@ -251,9 +289,75 @@ if (element.closest('.chart-container') || element.closest('#swagger-ui')) {
 - `GET /api/orders/{id}` - 订单详情
 - `GET /api/orders/{id}/tracking-link` - 物流追踪链接
 
+### 询价接口 🆕
+- `POST /api/inquiries` - 创建询价
+- `GET /api/inquiries` - 询价列表
+- `GET /api/inquiries/{id}` - 询价详情
+
+### 管理员接口
+- `GET /api/admin/stats` - 管理员统计数据
+- `GET /api/admin/users` - 用户管理
+- `GET /api/admin/orders` - 订单管理
+- `GET /api/admin/system-status` - 系统状态
+- `GET /api/admin/activities` - 活动日志
+
 ### 系统接口
 - `GET /api/health` - 健康检查
-- `GET /api/test/*` - 测试接口
+- `GET /api/test/*` - 测试接口 (仅开发环境)
+
+## API 响应格式
+
+### 标准响应结构 🆕
+```json
+{
+    "status": "success|error",
+    "message": "响应消息",
+    "data": {}, // 响应数据 (成功时)
+    "errors": {}, // 错误详情 (验证失败时)
+    "timestamp": "2025-12-03T13:50:34.000000Z"
+}
+```
+
+### ApiResponseService 使用 🆕
+```php
+// 成功响应
+ApiResponseService::success($data, '操作成功', 201);
+
+// 错误响应
+ApiResponseService::error('操作失败', $errors, 400);
+
+// 验证错误
+ApiResponseService::validationError($validator->errors());
+
+// 分页响应
+ApiResponseService::paginated($data, $pagination);
+```
+
+## 异常处理系统 🆕
+
+### 全局异常处理器
+- **统一格式**: 所有API异常返回标准JSON格式
+- **分类处理**: 验证、认证、授权、未找到等不同异常类型
+- **详细日志**: 记录异常详情用于调试
+- **用户友好**: 提供清晰的错误信息
+
+### 异常类型处理
+```php
+// 验证异常 - 422
+ValidationException::class
+
+// 认证异常 - 401
+AuthenticationException::class
+
+// 授权异常 - 403
+AuthorizationException::class
+
+// 未找到异常 - 404
+ModelNotFoundException::class
+
+// 服务器异常 - 500
+Exception::class
+```
 
 ## 开发约定
 
@@ -269,12 +373,20 @@ if (element.closest('.chart-container') || element.closest('#swagger-ui')) {
 - 字段名使用 snake_case
 - 主键统一为 `id`
 - 时间戳字段: `created_at`, `updated_at`
+- 外键命名: `{table}_id`
 
 ### API 设计
 - RESTful 风格
-- 统一的 JSON 响应格式
+- 统一的 JSON 响应格式 (ApiResponseService)
 - 适当的 HTTP 状态码
 - JWT 认证保护
+- 全局异常处理
+
+### 服务层设计 🆕
+- 使用服务类封装业务逻辑
+- ApiResponseService 统一响应格式
+- 遵循单一职责原则
+- 支持依赖注入
 
 ### 前端约定
 - Bootstrap 5 组件优先
@@ -316,11 +428,19 @@ npm run build
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# 运行数据库迁移
+php artisan migrate --force
 ```
 
 ## 故障排除
 
 ### 常见问题解决
+
+#### API 相关问题 🆕
+- **响应格式不一致**: 确认使用 ApiResponseService
+- **异常处理异常**: 检查 Handler.php 配置
+- **验证失败**: 检查请求参数和验证规则
 
 #### 图表相关问题
 - **图表位置异常**：检查是否正确应用了图表保护CSS
@@ -359,11 +479,23 @@ php artisan db:show
 
 # 测试特定功能
 php artisan test --filter OrderTest
+
+# 查看最新迁移
+php artisan migrate:status
 ```
 
 ## 版本历史
 
-### v1.2.0 (最新)
+### v1.3.0 (最新) 🆕
+- ✅ 修复路由配置冗余，优化代码结构
+- ✅ 修正控制器命名空间错误
+- ✅ 实施API响应格式标准化 (ApiResponseService)
+- ✅ 添加全局异常处理系统
+- ✅ 新增询价功能模块
+- ✅ 创建Inquiry数据模型和数据库迁移
+- ✅ 完善多角色改进分析中的高优先级项目
+
+### v1.2.0
 - ✅ 修复管理员后台图表位置异常bug
 - ✅ 添加图表保护机制
 - ✅ 完善和风设计系统
@@ -390,6 +522,11 @@ php artisan test --filter OrderTest
 - `develop` - 开发环境代码
 - `feature/*` - 功能分支
 
+**重要提交**:
+- `af22222` - 实施多角色改进分析中的高优先级改进
+- `2ccd36c` - 添加多角色改进分析文档
+- `563cd63` - 解决IFLOW.md合并冲突，保留更新的项目文档
+
 ## 扩展开发指南
 
 在添加新功能时，请遵循以下流程：
@@ -397,6 +534,7 @@ php artisan test --filter OrderTest
 1. **规格说明检查**
    - 查看 `openspec/` 目录中的现有规格
    - 检查 `openspec/changes/` 中的变更提案
+   - 参考 `MULTI_ROLE_IMPROVEMENT_ANALYSIS.md` 中的改进建议
 
 2. **创建变更提案**
    - 参考 `openspec/AGENTS.md` 中的流程
@@ -404,20 +542,39 @@ php artisan test --filter OrderTest
 
 3. **开发实施**
    - 遵循项目代码规范
+   - 使用 ApiResponseService 统一响应格式
    - 添加相应的测试
    - 更新文档
 
 4. **质量保证**
    - 运行完整测试套件
-   - 检查代码风格
+   - 检查代码风格 (php artisan pint)
    - 验证功能完整性
+   - 确保异常处理覆盖
+
+## 多角色改进分析 🆕
+
+项目已完成专业程序开发团队的多角色分析，包含以下角色的改进建议：
+
+### 已实施的高优先级改进
+- **技术债务清理**: 路由配置优化，命名空间修正
+- **API标准化**: 统一响应格式，全局异常处理
+- **功能增强**: 询价系统实现
+
+### 待实施的中优先级改进
+- **性能优化**: 缓存策略，查询优化
+- **安全增强**: API限流，输入验证
+- **功能扩展**: 批量采购，权限管理
+
+详细内容请参考 `MULTI_ROLE_IMPROVEMENT_ANALYSIS.md` 和 `PRODUCT_IMPROVEMENT_PLAN.md`。
 
 ## 联系支持
 
 - **技术问题**: 在 GitHub 仓库创建 Issue
 - **功能请求**: 通过 OpenSpec 流程提交提案
 - **文档问题**: 提交文档改进 PR
+- **改进建议**: 参考多角色改进分析文档
 
 ---
 
-**注意**: 本项目采用高端和风设计理念，在开发新功能时请保持设计一致性和用户体验的完整性。
+**注意**: 本项目采用高端和风设计理念，在开发新功能时请保持设计一致性和用户体验的完整性。所有新功能应使用 ApiResponseService 进行响应标准化，并确保全局异常处理覆盖。

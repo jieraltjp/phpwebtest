@@ -7,20 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'order_id',
+        'order_number',
         'user_id',
+        'total_amount',
+        'currency',
         'status',
         'status_message',
-        'total_fee_cny',
-        'total_fee_jpy',
         'shipping_address',
+        'notes',
+        'contact_info',
+        'order_type', // 'single' or 'bulk_purchase'
         'domestic_tracking_number',
         'international_tracking_number',
+        'total_fee_cny',
+        'total_fee_jpy',
     ];
 
     protected $casts = [
+        'total_amount' => 'decimal:2',
         'total_fee_cny' => 'decimal:2',
         'total_fee_jpy' => 'decimal:2',
+        'contact_info' => 'array',
     ];
 
     /**

@@ -15,11 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,
+            'api.throttle' => \App\Http\Middleware\ApiThrottle::class,
         ]);
         
         // 配置 API 路由的中间件
         $middleware->group('api', [
             \App\Http\Middleware\CorsMiddleware::class,
+            \App\Http\Middleware\ApiThrottle::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

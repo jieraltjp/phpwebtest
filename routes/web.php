@@ -84,16 +84,22 @@ Route::prefix('api')->group(function () {
     });
 
     // 产品相关路由
-    Route::apiResource('products', ProductController::class);
+    Route::apiResource('products', ProductController::class)->middleware('api.throttle:search');
 
     // 订单相关路由
-    Route::apiResource('orders', OrderController::class);
-    Route::get('/orders/{id}/tracking-link', [OrderController::class, 'trackingLink']);
+    Route::apiResource('orders', OrderController::class)->middleware('api.throttle:order');
+    Route::get('/orders/{id}/tracking-link', [OrderController::class, 'trackingLink'])->middleware('api.throttle:order');
 
     // 询价功能路由
-    Route::post('/inquiries', [App\Http\Controllers\Api\InquiryController::class, 'store']);
-    Route::get('/inquiries', [App\Http\Controllers\Api\InquiryController::class, 'index']);
-    Route::get('/inquiries/{id}', [App\Http\Controllers\Api\InquiryController::class, 'show']);
+    Route::apiResource('inquiries', App\Http\Controllers\Api\InquiryController::class)->middleware('api.throttle:inquiry');
+
+    // 批量采购路由
+    Route::prefix('bulk-purchase')->middleware('jwt.auth')->group(function () {
+        Route::post('/orders', [App\Http\Controllers\Api\BulkPurchaseController::class, 'store'])->middleware('api.throttle:order');
+        Route::get('/quote', [App\Http\Controllers\Api\BulkPurchaseController::class, 'getQuote'])->middleware('api.throttle:search');
+        Route::get('/history', [App\Http\Controllers\Api\BulkPurchaseController::class, 'history'])->middleware('api.throttle:search');
+        Route::get('/statistics', [App\Http\Controllers\Api\BulkPurchaseController::class, 'statistics'])->middleware('api.throttle:search');
+    });
 
     // 管理员API路由
     Route::prefix('admin')->group(function () {

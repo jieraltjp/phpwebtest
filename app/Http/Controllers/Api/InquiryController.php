@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Services\ApiResponseService;
+use App\Services\ValidationService;
 
 class InquiryController extends Controller
 {
@@ -14,28 +14,24 @@ class InquiryController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'product_sku' => 'required|string',
-            'quantity' => 'required|integer|min:1',
-            'message' => 'nullable|string|max:1000',
-            'contact_info' => 'required|array',
-            'contact_info.email' => 'required|email',
-            'contact_info.phone' => 'nullable|string',
-            'contact_info.company' => 'nullable|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return ApiResponseService::validationError($validator->errors());
+        // 清理输入数据
+        $sanitizedData = ValidationService::sanitizeInput($request->all());
+        
+        // 验证数据
+        $validation = ValidationService::validateInquiry($sanitizedData);
+        
+        if (!$validation['valid']) {
+            return ApiResponseService::validationError($validation['errors']);
         }
 
         try {
             // 模拟创建询价记录
             $inquiry = [
                 'id' => uniqid('INQ_'),
-                'product_sku' => $request->product_sku,
-                'quantity' => $request->quantity,
-                'message' => $request->message,
-                'contact_info' => $request->contact_info,
+                'product_sku' => $sanitizedData['product_sku'],
+                'quantity' => $sanitizedData['quantity'],
+                'message' => $sanitizedData['message'] ?? null,
+                'contact_info' => $sanitizedData['contact_info'],
                 'status' => 'pending',
                 'created_at' => now()->toISOString(),
                 'updated_at' => now()->toISOString()
