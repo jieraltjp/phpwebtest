@@ -45,6 +45,19 @@ Route::prefix('admin')->group(function () {
     Route::get('/activities', [AdminController::class, 'getRecentActivities']);
     Route::post('/users/{id}/approve', [AdminController::class, 'approveUser']);
     Route::post('/orders/{id}/status', [AdminController::class, 'updateOrderStatus']);
+    
+    // 权限管理路由
+    Route::get('/permissions', function() {
+        return view('admin.permissions');
+    })->middleware('permission:manage-permissions');
+    
+    Route::get('/roles', function() {
+        return view('admin.roles');
+    })->middleware('permission:manage-roles');
+    
+    Route::get('/user-permissions', function() {
+        return view('admin.user-permissions');
+    })->middleware('permission:manage-user-permissions');
 });
 
 // API文档路由

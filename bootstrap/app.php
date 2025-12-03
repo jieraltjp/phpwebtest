@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,
             'api.throttle' => \App\Http\Middleware\ApiThrottle::class,
+            'permission' => \App\Http\Middleware\PermissionMiddleware::class,
         ]);
         
         // 配置 API 路由的中间件

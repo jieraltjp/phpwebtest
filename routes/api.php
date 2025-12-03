@@ -63,6 +63,38 @@ Route::get('/test/orders', [App\Http\Controllers\TestController::class, 'orders'
 Route::get('/test/orders/{id}', [App\Http\Controllers\TestController::class, 'orderDetail']);
 Route::post('/test/orders', [App\Http\Controllers\TestController::class, 'createOrder']);
 
+// 权限管理 API 路由
+Route::middleware(['jwt.auth'])->prefix('permissions')->group(function () {
+    Route::get('/', [App\Http\Controllers\Api\PermissionController::class, 'index'])->middleware('permission:view-permissions');
+    Route::post('/', [App\Http\Controllers\Api\PermissionController::class, 'store'])->middleware('permission:create-permissions');
+    Route::get('/all', [App\Http\Controllers\Api\PermissionController::class, 'all'])->middleware('permission:view-permissions');
+    Route::get('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'show'])->middleware('permission:view-permissions');
+    Route::put('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'update'])->middleware('permission:edit-permissions');
+    Route::delete('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'destroy'])->middleware('permission:delete-permissions');
+    Route::get('/groups/list', [App\Http\Controllers\Api\PermissionController::class, 'getGroups'])->middleware('permission:view-permissions');
+});
+
+Route::middleware(['jwt.auth'])->prefix('roles')->group(function () {
+    Route::get('/', [App\Http\Controllers\Api\PermissionController::class, 'roles'])->middleware('permission:view-roles');
+    Route::post('/', [App\Http\Controllers\Api\PermissionController::class, 'createRole'])->middleware('permission:create-roles');
+    Route::get('/all', [App\Http\Controllers\Api\PermissionController::class, 'allRoles'])->middleware('permission:view-roles');
+    Route::get('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'showRole'])->middleware('permission:view-roles');
+    Route::put('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'updateRole'])->middleware('permission:edit-roles');
+    Route::delete('/{id}', [App\Http\Controllers\Api\PermissionController::class, 'deleteRole'])->middleware('permission:delete-roles');
+    Route::get('/{id}/permissions', [App\Http\Controllers\Api\PermissionController::class, 'rolePermissions'])->middleware('permission:view-roles');
+    Route::post('/{id}/permissions', [App\Http\Controllers\Api\PermissionController::class, 'assignPermissionsToRole'])->middleware('permission:edit-roles');
+});
+
+Route::middleware(['jwt.auth'])->prefix('users')->group(function () {
+    Route::get('/permissions', [App\Http\Controllers\Api\PermissionController::class, 'users'])->middleware('permission:view-user-permissions');
+    Route::get('/{id}/roles', [App\Http\Controllers\Api\PermissionController::class, 'userRoles'])->middleware('permission:view-user-permissions');
+    Route::post('/{id}/roles', [App\Http\Controllers\Api\PermissionController::class, 'assignRole'])->middleware('permission:edit-user-permissions');
+    Route::get('/{id}/permissions', [App\Http\Controllers\Api\PermissionController::class, 'userPermissions'])->middleware('permission:view-user-permissions');
+    Route::post('/{id}/permissions', [App\Http\Controllers\Api\PermissionController::class, 'assignPermissions'])->middleware('permission:edit-user-permissions');
+    Route::get('/{id}/permissions/details', [App\Http\Controllers\Api\PermissionController::class, 'userPermissionDetails'])->middleware('permission:view-user-permissions');
+    Route::post('/batch/permissions', [App\Http\Controllers\Api\PermissionController::class, 'batchAssignPermissions'])->middleware('permission:edit-user-permissions');
+});
+
 // 管理员 API 路由
 Route::prefix('admin')->group(function () {
     Route::get('/stats', [App\Http\Controllers\Admin\AdminController::class, 'getStats']);
