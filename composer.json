@@ -80,8 +80,16 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "secure-http": false,
+        "audit": {
+            "ignore": ["PKSA-rqc2-tcc6-nc79", "PKSA-b35n-565h-rs4q", "PKSA-365x-2zjk-pt47"]
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [{
+        "type": "composer",
+        "url": "https://packagist.jp"
+    }]
 }
