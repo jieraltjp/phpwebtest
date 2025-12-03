@@ -242,3 +242,36 @@ php artisan pint
 - 配置生产数据库
 - 启用 HTTPS
 - 添加适当的错误监控
+
+& "D:\xxamp\php\php.exe" artisan serve
+& "D:\xxamp\php\php.exe" composer.phar install --ignore-platform-reqs
+# 检查php版本
+php -version
+# 配置
+composer config -g disable-tls true
+# 暂时调为http
+composer config -g repos.packagist false
+composer config -g repos.packagist composer http://packagist.phpcomposer.com
+# 恢复https
+composer config -g --unset repos.packagist
+# 官方残酷
+composer config -g --unset repos.packagist
+composer config -g disable-tls false
+# 没用恢复
+composer config -g disable-tls false
+composer config -g --unset repos.packagist
+# 暂时关闭avast
+composer install --ignore-platform-reqs
+# 清楚缓存
+composer config -g --unset repos.packagist
+composer config -g disable-tls false
+composer clear-cache
+# 证书如果有问题
+composer install --ignore-platform-reqs
+# 更新地址 更新后可用
+composer update --optimize-autoloader
+
+# 安装依赖
+composer install
+# 运行服务
+php artisan serve
