@@ -13,43 +13,67 @@ class ProductController extends Controller
 {
     /**
      * 获取产品列表
+     * 优化：增强缓存策略，添加查询性能监控
      */
     public function index(Request $request): JsonResponse
     {
+        $startTime = microtime(true);
+        
         try {
             // 构建筛选条件
             $filters = [];
             
             if ($request->has('search')) {
-                $filters['search'] = $request->get('search');
+                $filters['search'] = trim($request->get('search'));
             }
             
             if ($request->has('min_price')) {
-                $filters['min_price'] = $request->get('min_price');
+                $filters['min_price'] = (float) $request->get('min_price');
             }
             
             if ($request->has('max_price')) {
-                $filters['max_price'] = $request->get('max_price');
+                $filters['max_price'] = (float) $request->get('max_price');
             }
             
             if ($request->has('supplier')) {
-                $filters['supplier'] = $request->get('supplier');
+                $filters['supplier'] = trim($request->get('supplier'));
+            }
+            
+            if ($request->has('category')) {
+                $filters['category'] = trim($request->get('category'));
             }
 
             // 分页参数
-            $page = $request->get('page', 1);
-            $perPage = $request->get('per_page', $request->get('limit', 20));
+            $page = max(1, (int) $request->get('page', 1));
+            $perPage = min(100, max(1, (int) $request->get('per_page', $request->get('limit', 20))));
 
-            // 使用缓存获取产品列表
-            $products = CacheService::getProducts($filters, $page, $perPage);
+            // 使用优化的缓存获取产品列表
+            $products = CacheService::getProductsOptimized($filters, $page, $perPage);
 
-            return ApiResponseService::paginated(
+            // 性能监控
+            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            
+            $response = ApiResponseService::paginated(
                 $products->items(),
                 $products,
                 '产品列表获取成功'
             );
+            
+            // 添加性能信息到响应头
+            $response->headers->set('X-Execution-Time', $executionTime . 'ms');
+            $response->headers->set('X-Cache-Hit', $products->cacheHit ?? 'false');
+            
+            return $response;
 
         } catch (\Exception $e) {
+            // 记录错误日志
+            \Log::error('Product list fetch error: ' . $e->getMessage(), [
+                'filters' => $filters ?? [],
+                'page' => $page ?? 1,
+                'per_page' => $perPage ?? 20,
+                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
+            ]);
+            
             return ApiResponseService::serverError('获取产品列表失败: ' . $e->getMessage());
         }
     }

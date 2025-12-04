@@ -73,3 +73,14 @@ Route::prefix('admin')->group(function () {
     Route::post('/users/{id}/approve', [App\Http\Controllers\Admin\AdminController::class, 'approveUser']);
     Route::post('/orders/{id}/status', [App\Http\Controllers\Admin\AdminController::class, 'updateOrderStatus']);
 });
+
+// 加密服务 API 路由（需要管理员权限）
+Route::prefix('encryption')->middleware(['jwt.auth', 'throttle:admin'])->group(function () {
+    Route::get('/status', [App\Http\Controllers\Api\EncryptionController::class, 'status']);
+    Route::post('/test', [App\Http\Controllers\Api\EncryptionController::class, 'test']);
+    Route::post('/encrypt-batch', [App\Http\Controllers\Api\EncryptionController::class, 'encryptBatch']);
+    Route::post('/generate-token', [App\Http\Controllers\Api\EncryptionController::class, 'generateToken']);
+    Route::post('/mask-data', [App\Http\Controllers\Api\EncryptionController::class, 'maskData']);
+    Route::post('/verify-hash', [App\Http\Controllers\Api\EncryptionController::class, 'verifyHash']);
+    Route::post('/generate-hash', [App\Http\Controllers\Api\EncryptionController::class, 'generateHash']);
+});
