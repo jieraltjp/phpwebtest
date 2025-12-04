@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="D:\しょうけつ\Programme\php\phpwebtest\phpunit.xml" tests="10" assertions="0" errors="10" failures="0" skipped="0" time="0.000000">
+    <testsuite name="Unit" tests="10" assertions="0" errors="10" failures="0" skipped="0" time="0.000000">
+      <testsuite name="Tests\Unit\Events\EventSystemTest" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" tests="10" assertions="0" errors="10" failures="0" skipped="0" time="0.000000">
+        <testcase name="it_provides_debug_information" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="142" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_provides_debug_information&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Electa Klocko, admin, admin@banho.com, 2025-12-04 07:16:01, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Yundt PLC, eyJpdiI6Ind1dkFaTXp4eEEwdG5ETTBoVnU0NFE9PSIsInZhbHVlIjoienJrTHA4ck9Eb0k4eFQyV2VtZUhMQT09IiwibWFjIjoiOGYwMDJkMjNlNTVkZmVhZmMzYmE5ZjRkYTFlZTc4NDllNmQxZTNiNzRhZDJiZDgyODExYTBhNDY1YzllMDU2YyIsInRhZyI6IiJ9, eyJpdiI6ImdtMDdsTmN0ckdpRWtZYzBzc0w5Wnc9PSIsInZhbHVlIjoiYitzTjlweUVsd2tybm5LRzI4VVJPV1FyVkFkcGVDWXBvRTk5bDJTYW5aRlRuQ2ZnSVNoVnhRUjJjbFRhSUdxaCIsIm1hYyI6IjI5YmM1ZTYwMzMxZGQyZGYzMjM0MWFhNmQxNjZjNmQ3YzNmYmI0MjVlOWVmZTRmN2E0YWM2OWE5MWFkMzYwNWIiLCJ0YWciOiIifQ==, xYy98DbTpq, admin, 2025-12-04 07:16:02, 2025-12-04 07:16:02))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_handles_user_registered_event" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="114" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_handles_user_registered_event&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Miss Kailee Boehm, admin, admin@banho.com, 2025-12-04 07:16:04, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Gibson, Kirlin and Moore, eyJpdiI6ImF2bUVlVUNUMjJoSkM4MUVuNERZMmc9PSIsInZhbHVlIjoic2UwelMyaG5wdVVoWGRMZVpqT3hNdz09IiwibWFjIjoiMTk1ZDYzMWRhZmE1ZTBmOWZlNjkyYzZjOWZkZmNkZWMyNzQxZmY0NmUxOTUxZjVhZWMzZTE2Nzg3YzVlZTBhZCIsInRhZyI6IiJ9, eyJpdiI6Ilo2bnN2dXIreENaWlVzZldxN3pTVUE9PSIsInZhbHVlIjoiOVRFR2tnTnlRak9pVEs1cDJlVWZxTHQwdEFSYjNsNWQ5U1ppQzh6OHgyb2gzU2d0dndldHYvaHFXNkFUaDdVM2kyRFNTWEo5dC9JYzB1R2d5d1J3UVE9PSIsIm1hYyI6ImExOGZiZTg2ODg3NmQxOGMzZjU2MzcxNWI1NTJjNTYzYTVmMGVjZmNlYTI0YzI5OWE2MGQwMDE4NDVjM2RlZTgiLCJ0YWciOiIifQ==, AHyWYw96ju, admin, 2025-12-04 07:16:04, 2025-12-04 07:16:04))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_can_handle_multiple_listeners" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="44" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_can_handle_multiple_listeners&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Rosemary Rohan, admin, admin@banho.com, 2025-12-04 07:16:06, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Barrows Group, eyJpdiI6IkZ6aW9rNmwvNjNyOTBOZ0RpR2RCU0E9PSIsInZhbHVlIjoiTE5QY2hDZ0xnallxUGxFZHhqTmRYUT09IiwibWFjIjoiZDVhNTViYjI3YTE5MWIyZjNjZjk3YjdhNzhkYzgxZTYxOWUwY2U0NmE4MTQ1Mjg0OWMxMmFkOGE5ODZlYWVmYSIsInRhZyI6IiJ9, eyJpdiI6IlNiVU0yREV2VFkyT1NlMTU0ZThtL1E9PSIsInZhbHVlIjoiaWFSUlBpQkdWMjBPaVVPYTdZUjJwbDZENW5HaHhCN016VUdkTmVSM21Iang0R0pFQVlwMFdwSkNTREJZNDJVbyIsIm1hYyI6IjJjODk5ZjBmYTAxODdjZTAxYTc1NzVmMzgyZWNkOTJkMmNhMWY4NDM5OGU2ZDc5YWFmZTExNzQ5NTkyYmUzZTciLCJ0YWciOiIifQ==, sCDxz5so47, admin, 2025-12-04 07:16:06, 2025-12-04 07:16:06))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_can_dispatch_async_events" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="105" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_can_dispatch_async_events&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Paxton Keebler I, admin, admin@banho.com, 2025-12-04 07:16:08, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Luettgen-Cassin, eyJpdiI6IjVIM0pqT29uNTladUJldG93QnFXQWc9PSIsInZhbHVlIjoiRFRVZm9wV2c3bE5PSXdDSXJJaE9HUT09IiwibWFjIjoiMjVjNWI1NWU0MmM3YjE2MTM1YjFmMTNiYzhkNmZkNzFmNmViZGY3YzlkN2ZkMmEzNjk1OWQyODQxMzA0MGViZSIsInRhZyI6IiJ9, eyJpdiI6IlZWSU9IT1lmNnpHNWtPTjFLenlncnc9PSIsInZhbHVlIjoiVi9wbTdFdmRkWFRzZnppbTkzVHU1cTlIM1hqeGtHcFpza3ZPN0Q4eW8zVmRES2RuL2RCQ0pndXBYYWlGVGxXMUJqREZhaUUxWGpWVm5MN2t2ZEN6T1E9PSIsIm1hYyI6Ijg2NGVmMzQzOTk5NDc0MDlmNGQwNzUxNzZkNWViMTJmNzgxZjQ2NjViODNhOGVmZjU4N2QwMjFmN2E1NzA5NGUiLCJ0YWciOiIifQ==, wjuzfVZOcl, admin, 2025-12-04 07:16:08, 2025-12-04 07:16:08))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_respects_listener_priority" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="60" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_respects_listener_priority&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Jamir Willms, admin, admin@banho.com, 2025-12-04 07:16:10, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Rippin-Robel, eyJpdiI6Ik1FeDhFTHJKbW5ZSTZoVVdCeEpjcUE9PSIsInZhbHVlIjoicGc4OTRpWEN4R1BNcFZMUHNybDhFQT09IiwibWFjIjoiNjQ0NmFlMWEwYjA4N2Y2NTFiYTdmMGYwMDA3YzRkZjJhODQ4MGJmYjBiMGU5YjBjNTkxYjY3Y2EzNmM5YTllNyIsInRhZyI6IiJ9, eyJpdiI6ImFFVUQ0YU5qWDlNZWVzZzcwZU1TSlE9PSIsInZhbHVlIjoiYVFpa3lXNnNLN0xzVDQyNnJXTzkySlY1TE1WTmVJa2lZVFBVNmxmM0dNUXBuSjR2QU1aNlVMODN2THhGbm5PcyIsIm1hYyI6ImU4OWEyMWIxZmQzYzIzMWVlZTk4MmZjMzFhNTQ4ZTE2ODYwOTU3ZWRmMjUyMmIwYWNmNzZiYmIyODVkNWQ5ZjAiLCJ0YWciOiIifQ==, MHUwTYWazt, admin, 2025-12-04 07:16:10, 2025-12-04 07:16:10))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_records_event_history" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="92" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_records_event_history&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Dasia Gottlieb, admin, admin@banho.com, 2025-12-04 07:16:13, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Cummerata Group, eyJpdiI6IkJwRHhZUlNPVHA0TU9HUlVnNmcyc0E9PSIsInZhbHVlIjoiSTU0eDgrY2RHMHhMOFE4YlJCaFR5Zz09IiwibWFjIjoiMWMzMWM3OTJkZTdmODdhN2VmNzEwZjQ1NTA2MmQ4YjU4MDY3ZDQ5ZjAzZjQ3YTRhZDgxZjE2Y2RkYTVmZGE2MyIsInRhZyI6IiJ9, eyJpdiI6IlpGaHRCamlsNTRibWJmV2RGRm12VFE9PSIsInZhbHVlIjoiTE1ROE9CdHorT2tvankrU3JVWmNsSDJTUWxPM0t3bUY0bTEweHZ4UUZ5Y1hhRTJjdUZsTTB2RGNITjZQQ0VyK094LzZaeW9lYTl4S2FlMWZyMktVYVE9PSIsIm1hYyI6IjU5YTJmZmQ5MmJlOTVjMDc0ZjlkMzI3MDBjYzNiYWM0OTc5OTZjOWQzOWFjMWJjYmZmZTM4NGI3MTU4ZTJlYzgiLCJ0YWciOiIifQ==, o2JiOuomfT, admin, 2025-12-04 07:16:13, 2025-12-04 07:16:13))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_can_enable_and_disable_event_system" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="130" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_can_enable_and_disable_event_system&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Mr. Garland Watsica II, admin, admin@banho.com, 2025-12-04 07:16:15, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Hackett, Ortiz and Hamill, eyJpdiI6InNROE0zV0FwTUNDb01OS0IxUGR2b3c9PSIsInZhbHVlIjoidGdOS3I3a1BrQUx6TDJabVRIbjYzenluaDFUWU91SHoyTHcwR0VMZ3A4Yz0iLCJtYWMiOiI1MWEwMGJmMjJlZDMxNzM5MTI0YmY1ZTI3MmMwMjdhNDk3NTAwNmIyMTQxZmI1NTVmMjE4ZmZlOTlhNDZhNDg3IiwidGFnIjoiIn0=, eyJpdiI6Im95b29SMVVwdnhyQTFLTmExeHJibXc9PSIsInZhbHVlIjoiV1pxRFRDY0tqT3phL3duYUJpT2RJRUZDNHlZQ2huci9tSU80T2pZNGh4YjlkRFBnc0c1a3RibGF5bkk5dm5TaCIsIm1hYyI6ImI5YTFlNzQ0YzExOWMyZDFjMjg3NWY0YzhjNGZiNzc3YzlkNWFhNTMzZTUwNTM1MGU4OTZkOTM0YWRiNTM0NGEiLCJ0YWciOiIifQ==, GvYY4yVH2W, admin, 2025-12-04 07:16:15, 2025-12-04 07:16:15))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_can_stop_propagation" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="76" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_can_stop_propagation&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Prof. Linwood Veum, admin, admin@banho.com, 2025-12-04 07:16:17, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Ankunding, Volkman and Metz, eyJpdiI6Ik1OWk5CaUp1eml1Um5FTFBkRjB1VVE9PSIsInZhbHVlIjoid2QrVmZseDdBLytpYUVKeW9GSjdyUT09IiwibWFjIjoiZGMxOGIxYzBjNmQ3NjM2NWY4OWZlZGY1ZjE3ZTEyY2Y2NzA5ZDE0OTZhMDk2MzNiYzZlZjVjNDRkOGVlZDU1NiIsInRhZyI6IiJ9, eyJpdiI6IkhPenB1ZlFRR1haamlSOGphWW12ZlE9PSIsInZhbHVlIjoibUpFY0FmcTV5OVFDc2FBaEdtTGdoVXRGdnZ3M0lJQ28xbmo4MEM5R014eGVlUUtkaHBFUmswUWN6bmR4c3FzYSIsIm1hYyI6IjQyZjY3M2FiZWRmMThhNTI4YWZmMGMzODJmNGQwZjE4MWIxNTQxNjMwOGVkOGNjZTA1MjAzZGVkMzdjZTNkODMiLCJ0YWciOiIifQ==, ejjgfcgak3, admin, 2025-12-04 07:16:17, 2025-12-04 07:16:17))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_handles_listener_exceptions_gracefully" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="153" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_handles_listener_exceptions_gracefully&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Retha Emard, admin, admin@banho.com, 2025-12-04 07:16:19, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Murray, Hagenes and Dare, eyJpdiI6IlVPSzB0dUF5WEpYSmkvWGtCRGRab1E9PSIsInZhbHVlIjoiekoxZjBhZ0hWNW5LNHFtQVk2RXlCUT09IiwibWFjIjoiYjY3MWZhNWRlOGQ3NGE3MWFhNDNjMDI0NGVjMzJiYjRmYmU2N2UzZjE3NmI2NmM1MDQyMDRlYTY2MzI5NDM2NyIsInRhZyI6IiJ9, eyJpdiI6IndqK3IySk55S25SaElCUEt1RHAyclE9PSIsInZhbHVlIjoiSlJWcXJkZ0lPUjdtUDhnVlNUdWc1Z29iMDVXQVF2ci83NGRNY1hUR2xWL2xFQ1dHS09WeENlV2VpNlZZaG5vQ3JNRXJqSUVrZVRIY25BVHRiMEw3MFdiVlJSeHcveEd1Z1RQVXFJMWw1WVk9IiwibWFjIjoiZjJkMGYzOTc1YjNmZGI0MWU2ZmFlZDExYTQ0NDliYjFmNTI2YmU5NDNjZTJmNGI4YWI4YTljZTQ0ZWI2Y2I0YSIsInRhZyI6IiJ9, wwbabfTqIU, admin, 2025-12-04 07:16:19, 2025-12-04 07:16:19))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+        <testcase name="it_can_register_and_dispatch_events" file="D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php" line="28" class="Tests\Unit\Events\EventSystemTest" classname="Tests.Unit.Events.EventSystemTest" assertions="0" time="0.000000">
+          <error type="Illuminate\Database\QueryException">Tests\Unit\Events\EventSystemTest::it_can_register_and_dispatch_events&#13;
+Illuminate\Database\QueryException: SQLSTATE[HY000]: General error: 1 table users has no column named role (Connection: sqlite, SQL: insert into "users" ("name", "username", "email", "email_verified_at", "password", "company_name", "phone", "address", "remember_token", "role", "updated_at", "created_at") values (Prof. Lonny Luettgen III, admin, admin@banho.com, 2025-12-04 07:16:21, $2y$12$PaXmwJxPt0qfaasVAuSCz.JCbQSnBPNF8ZFeaeoIGw.KYUOgSOu.q, Larkin Inc, eyJpdiI6IkNGMXVwbnZzVFRJaFpDcGl4a2lUNXc9PSIsInZhbHVlIjoiUjd1aUlnRnhQUW1Sem9mM3lqVFQyN2xhaXVTQkgyTTJVSFZIQXpyMFQ0Yz0iLCJtYWMiOiI5ZTE2ZDk5NzBhNzA2ZGFmZTE5MWNhYjliYjQwN2UyYmY5YjJjY2RkZmVjNTEzZjIwODg0MmNiY2FiYjEyN2M0IiwidGFnIjoiIn0=, eyJpdiI6IlhjV0JYam9XQU1yWS9sQ1IwV3J1eEE9PSIsInZhbHVlIjoiYktiNHZrK0xMK3E5emthZk5OQzNrWnNhWG9EOUo3cm5DR0d6R0hNdC84VE1IUm9XanZ2NGMrNkVWYkZ0QytrL2cyMGpWdTRkaStpSjhibFUwTHZKU1E9PSIsIm1hYyI6IjJiODFlOWZjZWY5NTU3NGEwNDkxZTBkMzM4NjYzZmUwYmI0MTExZTVlMWI1MmNlZDFiNGUwMjQ5Y2QyOGQ5N2MiLCJ0YWciOiIifQ==, 5Ds6xUTdzT, admin, 2025-12-04 07:16:21, 2025-12-04 07:16:21))
+&#13;
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:826
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:780
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:559
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Connection.php:523
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:3853
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:271
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+D:\しょうけつ\Programme\php\phpwebtest\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:315
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:46
+D:\しょうけつ\Programme\php\phpwebtest\tests\TestCase.php:27
+D:\しょうけつ\Programme\php\phpwebtest\tests\Unit\Events\EventSystemTest.php:22</error>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

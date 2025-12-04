@@ -473,6 +473,87 @@ class ValidationService
     }
 
     /**
+     * V2 增强登录验证
+     */
+    public static function validateLoginV2(array $data): array
+    {
+        $rules = [
+            'username' => 'required|string|min:3|max:50',
+            'password' => 'required|string|min:6',
+            'device_info.device_id' => 'nullable|string|max:100',
+            'device_info.device_type' => 'nullable|string|in:web,mobile,tablet,api',
+            'device_info.user_agent' => 'nullable|string|max:500',
+            'remember_me' => 'nullable|boolean',
+        ];
+
+        $messages = [
+            'username.required' => '用户名是必填字段',
+            'username.min' => '用户名至少需要3个字符',
+            'password.required' => '密码是必填字段',
+            'password.min' => '密码至少需要6个字符',
+            'device_info.device_type.in' => '设备类型必须是 web, mobile, tablet 或 api',
+        ];
+
+        $validator = Validator::make($data, $rules, $messages);
+
+        if ($validator->fails()) {
+            return [
+                'valid' => false,
+                'errors' => $validator->errors()->toArray()
+            ];
+        }
+
+        return ['valid' => true, 'errors' => []];
+    }
+
+    /**
+     * V2 增强用户验证
+     */
+    public static function validateUserV2(array $data): array
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|min:3|max:50|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/',
+            'password_confirmation' => 'required|string|same:password',
+            'phone' => 'nullable|string|regex:/^[\+]?[1-9][\d]{0,15}$/',
+            'company' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:1000',
+            'business_license' => 'nullable|string|max:50',
+            'user_type' => 'required|string|in:individual,enterprise',
+        ];
+
+        $messages = [
+            'name.required' => '姓名是必填字段',
+            'username.required' => '用户名是必填字段',
+            'username.unique' => '用户名已被使用',
+            'email.required' => '邮箱是必填字段',
+            'email.email' => '请输入有效的邮箱地址',
+            'email.unique' => '邮箱已被使用',
+            'password.required' => '密码是必填字段',
+            'password.min' => '密码至少需要8个字符',
+            'password.regex' => '密码必须包含大小写字母、数字和特殊字符',
+            'password_confirmation.required' => '确认密码是必填字段',
+            'password_confirmation.same' => '两次密码输入不一致',
+            'user_type.required' => '用户类型是必填字段',
+            'user_type.in' => '用户类型必须是 individual 或 enterprise',
+            'business_license.max' => '营业执照号不能超过50个字符',
+        ];
+
+        $validator = Validator::make($data, $rules, $messages);
+
+        if ($validator->fails()) {
+            return [
+                'valid' => false,
+                'errors' => $validator->errors()->toArray()
+            ];
+        }
+
+        return ['valid' => true, 'errors' => []];
+    }
+
+    /**
      * 验证身份证号（简化版）
      */
     public static function validateIdCard($idCard): bool

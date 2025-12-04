@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\ApiResponseService;
 use App\Services\ValidationService;
+use App\Services\EventService;
+use App\Events\User\UserLoggedInEvent;
+use App\Events\User\UserRegisteredEvent;
+use App\Events\User\UserUpdatedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -103,6 +107,17 @@ class AuthController extends Controller
         $user->last_login_at = now();
         $user->save();
 
+        // 触发用户登录事件
+        try {
+            EventService::dispatch(new UserLoggedInEvent($user));
+        } catch (\Exception $e) {
+            // 事件失败不影响登录流程
+            \Log::warning('UserLoggedInEvent failed to dispatch', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+
         return $this->respondWithToken($token, $user);
     }
 
@@ -186,6 +201,17 @@ class AuthController extends Controller
                 'address' => $sanitizedData['address'] ?? null,
                 'active' => true,
             ]);
+
+            // 触发用户注册事件
+            try {
+                EventService::dispatch(new UserRegisteredEvent($user));
+            } catch (\Exception $e) {
+                // 事件失败不影响注册流程
+                \Log::warning('UserRegisteredEvent failed to dispatch', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
 
             // 自动登录并返回令牌
             $token = auth('api')->login($user);

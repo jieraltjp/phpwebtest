@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\ApiResponseService;
 use App\Services\CacheService;
+use App\Services\EventService;
+use App\Events\Product\ProductViewedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -117,6 +119,17 @@ class ProductController extends Controller
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
             ];
+
+            // 触发产品浏览事件（异步处理，不影响响应速度）
+            try {
+                EventService::dispatch(new ProductViewedEvent($product));
+            } catch (\Exception $e) {
+                // 事件失败不影响产品详情获取
+                \Log::warning('ProductViewedEvent failed to dispatch', [
+                    'product_id' => $product->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
 
             return ApiResponseService::success($productData, '产品详情获取成功');
 

@@ -7,6 +7,10 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Shipment;
+use App\Services\EventService;
+use App\Events\Order\OrderCreatedEvent;
+use App\Events\Order\OrderStatusChangedEvent;
+use App\Events\Order\OrderCancelledEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -100,6 +104,17 @@ class OrderController extends Controller
             }
 
             DB::commit();
+
+            // 触发订单创建事件
+            try {
+                EventService::dispatch(new OrderCreatedEvent($order));
+            } catch (\Exception $e) {
+                // 事件失败不影响订单创建
+                \Log::warning('OrderCreatedEvent failed to dispatch', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
 
             return response()->json([
                 'order_id' => $order->order_id,
