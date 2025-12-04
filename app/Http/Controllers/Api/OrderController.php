@@ -7,6 +7,10 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Shipment;
+use App\Services\EventService;
+use App\Events\Order\OrderCreatedEvent;
+use App\Events\Order\OrderStatusChangedEvent;
+use App\Events\Order\OrderCancelledEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +105,17 @@ class OrderController extends Controller
 
             DB::commit();
 
+            // 触发订单创建事件
+            try {
+                EventService::dispatch(new OrderCreatedEvent($order));
+            } catch (\Exception $e) {
+                // 事件失败不影响订单创建
+                \Log::warning('OrderCreatedEvent failed to dispatch', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
             return response()->json([
                 'order_id' => $order->order_id,
                 'message' => '订单已成功提交到阿里巴巴平台。',
@@ -119,20 +134,33 @@ class OrderController extends Controller
 
     /**
      * 获取用户订单列表
+     * 优化：使用缓存和预加载避免 N+1 查询问题
      */
     public function index(Request $request): JsonResponse
     {
         $user = Auth::guard('api')->user();
-        $query = Order::where('user_id', $user->id);
+        
+        // 构建缓存键
+        $page = $request->get('page', 1);
+        $perPage = $request->get('per_page', 20);
+        $status = $request->get('status', 'all');
+        $cacheKey = "user_orders:{$user->id}:{$status}:{$page}:{$perPage}";
+        
+        // 使用缓存获取订单列表
+        $orders = \App\Services\CacheService::remember($cacheKey, \App\Services\CacheService::SHORT_TTL, function () use ($user, $request, $perPage) {
+            $query = Order::where('user_id', $user->id)
+                ->with(['items.product']) // 预加载订单项和产品信息，避免 N+1 查询
+                ->with(['shipment']); // 预加载物流信息
 
-        // 按状态筛选
-        if ($request->has('status')) {
-            $query->where('status', $request->get('status'));
-        }
+            // 按状态筛选
+            if ($request->has('status') && $request->get('status') !== 'all') {
+                $query->where('status', $request->get('status'));
+            }
 
-        $orders = $query->orderBy('created_at', 'desc')->get();
+            return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        });
 
-        $orderList = $orders->map(function ($order) {
+        $orderList = $orders->getCollection()->map(function ($order) {
             return [
                 'order_id' => $order->order_id,
                 'created_at' => $order->created_at->toISOString(),
@@ -140,40 +168,54 @@ class OrderController extends Controller
                 'currency' => 'CNY',
                 'status' => $order->status,
                 'status_message' => $order->status_message,
+                'items_count' => $order->items->count(), // 预加载后可直接访问
+                'has_shipment' => $order->shipment !== null, // 预加载后可直接访问
             ];
         });
 
-        return response()->json([
-            'data' => $orderList,
-            'total' => $orderList->count(),
-        ]);
+        return \App\Services\ApiResponseService::paginated(
+            $orderList->toArray(),
+            $orders,
+            '订单列表获取成功'
+        );
     }
 
     /**
      * 获取订单详情
+     * 优化：使用预加载避免 N+1 查询问题，添加缓存支持
      */
     public function show(string $id): JsonResponse
     {
         $user = Auth::guard('api')->user();
-        $order = Order::where('order_id', $id)->where('user_id', $user->id)->first();
+        
+        // 使用缓存获取订单详情
+        $cacheKey = "order_detail:{$id}:{$user->id}";
+        $order = \App\Services\CacheService::remember($cacheKey, \App\Services\CacheService::SHORT_TTL, function () use ($id, $user) {
+            return Order::where('order_id', $id)
+                ->where('user_id', $user->id)
+                ->with(['items.product', 'shipment']) // 预加载所有关联数据，避免 N+1 查询
+                ->first();
+        });
 
         if (!$order) {
-            return response()->json([
-                'error' => 'Order not found',
-                'message' => '订单不存在'
-            ], 404);
+            return \App\Services\ApiResponseService::notFound('订单不存在');
         }
 
-        $orderItems = $order->orderItems->map(function ($item) {
+        // 预加载后可以直接访问关联数据，无需额外查询
+        $orderItems = $order->items->map(function ($item) {
             return [
                 'sku' => $item->sku,
                 'name' => $item->name,
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
+                'total_price' => $item->total_price,
+                'currency' => $item->currency,
+                'product_image' => $item->product ? $item->product->image_url : null, // 预加载的产品信息
+                'product_stock' => $item->product ? $item->product->stock : null,
             ];
         });
 
-        return response()->json([
+        $orderData = [
             'order_id' => $order->order_id,
             'created_at' => $order->created_at->toISOString(),
             'total_amount' => $order->total_fee_cny,
@@ -182,43 +224,63 @@ class OrderController extends Controller
             'status_message' => $order->status_message,
             'items' => $orderItems,
             'shipping_address' => $order->shipping_address,
-            'domestic_tracking_number' => $order->domestic_tracking_number,
-            'international_tracking_number' => $order->international_tracking_number,
             'total_fee_cny' => $order->total_fee_cny,
             'total_fee_jpy' => $order->total_fee_jpy,
-        ]);
+        ];
+
+        // 添加物流信息（如果存在）
+        if ($order->shipment) {
+            $orderData['tracking'] = [
+                'domestic_tracking_number' => $order->shipment->domestic_tracking_number,
+                'international_tracking_number' => $order->shipment->international_tracking_number,
+                'logistics_company' => $order->shipment->logistics_company,
+                'tracking_url' => $order->shipment->tracking_url,
+                'status' => $order->shipment->status,
+                'updated_at' => $order->shipment->updated_at->toISOString(),
+            ];
+        }
+
+        return \App\Services\ApiResponseService::success($orderData, '订单详情获取成功');
     }
 
     /**
      * 获取订单物流追踪链接
+     * 优化：使用预加载避免 N+1 查询问题，添加缓存支持
      */
     public function trackingLink(string $id): JsonResponse
     {
         $user = Auth::guard('api')->user();
-        $order = Order::where('order_id', $id)->where('user_id', $user->id)->first();
+        
+        // 使用缓存获取订单和物流信息
+        $cacheKey = "order_tracking:{$id}:{$user->id}";
+        $order = \App\Services\CacheService::remember($cacheKey, \App\Services\CacheService::SHORT_TTL, function () use ($id, $user) {
+            return Order::where('order_id', $id)
+                ->where('user_id', $user->id)
+                ->with(['shipment']) // 预加载物流信息，避免 N+1 查询
+                ->first();
+        });
 
         if (!$order) {
-            return response()->json([
-                'error' => 'Order not found',
-                'message' => '订单不存在'
-            ], 404);
+            return \App\Services\ApiResponseService::notFound('订单不存在');
         }
 
-        $shipment = $order->shipment;
-
-        if (!$shipment) {
-            return response()->json([
+        // 预加载后可以直接访问 shipment，无需额外查询
+        if (!$order->shipment) {
+            return \App\Services\ApiResponseService::success([
                 'message' => '暂无物流信息',
                 'tracking_url' => null,
                 'logistics_company' => null,
-            ]);
+                'status' => 'no_shipment'
+            ], '物流信息查询完成');
         }
 
-        return response()->json([
-            'tracking_url' => $shipment->tracking_url,
-            'logistics_company' => $shipment->logistics_company,
-            'domestic_tracking_number' => $shipment->domestic_tracking_number,
-            'international_tracking_number' => $shipment->international_tracking_number,
-        ]);
+        return \App\Services\ApiResponseService::success([
+            'tracking_url' => $order->shipment->tracking_url,
+            'logistics_company' => $order->shipment->logistics_company,
+            'domestic_tracking_number' => $order->shipment->domestic_tracking_number,
+            'international_tracking_number' => $order->shipment->international_tracking_number,
+            'status' => $order->shipment->status,
+            'last_updated' => $order->shipment->updated_at->toISOString(),
+        ], '物流信息获取成功');
     }
 }

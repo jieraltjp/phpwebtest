@@ -1,0 +1,467 @@
+/* 万方商事企业主题设计系统 */
+:root {
+    /* 万方商事品牌色彩系统 */
+    --banho-primary: #1a365d;
+    --banho-primary-light: #2c5282;
+    --banho-primary-dark: #1a2744;
+    --banho-secondary: #d4af37;
+    --banho-secondary-light: #f4e4bc;
+    --banho-accent: #dc2626;
+    --banho-accent-light: #ef4444;
+    
+    /* 中性色彩系统 */
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    
+    /* 语义化颜色 */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    
+    /* 字体系统 */
+    --font-family-base: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    --font-family-heading: 'Noto Serif JP', 'Hiragino Mincho', 'Yu Mincho', serif;
+    
+    /* 间距系统 */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+    
+    /* 圆角系统 */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    
+    /* 阴影系统 */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    /* 过渡动画 */
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 300ms ease-in-out;
+    --transition-slow: 500ms ease-in-out;
+}
+
+/* 基础重置 */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background-color: var(--gray-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 万方商事企业组件 */
+
+/* 导航栏 */
+.banho-navbar {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-dark) 100%);
+    box-shadow: var(--shadow-md);
+    border-bottom: 3px solid var(--banho-secondary);
+}
+
+.banho-navbar-brand {
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.banho-navbar-brand:hover {
+    color: var(--banho-secondary-light);
+    transition: color var(--transition-fast);
+}
+
+/* 企业级按钮 */
+.btn-banho {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-family-base);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    border: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.btn-banho-primary {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-light) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-banho-primary:hover {
+    background: linear-gradient(135deg, var(--banho-primary-light) 0%, var(--banho-primary) 100%);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-banho-secondary {
+    background: linear-gradient(135deg, var(--banho-secondary) 0%, var(--banho-secondary-light) 100%);
+    color: var(--banho-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-banho-secondary:hover {
+    background: linear-gradient(135deg, var(--banho-secondary-light) 0%, var(--banho-secondary) 100%);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn-banho-outline {
+    background: transparent;
+    color: var(--banho-primary);
+    border: 2px solid var(--banho-primary);
+}
+
+.btn-banho-outline:hover {
+    background: var(--banho-primary);
+    color: white;
+}
+
+/* 企业级卡片 */
+.banho-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.banho-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+.banho-card-header {
+    background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.banho-card-body {
+    padding: var(--space-lg);
+}
+
+.banho-card-footer {
+    background: var(--gray-50);
+    padding: var(--space-lg);
+    border-top: 1px solid var(--gray-200);
+}
+
+/* 企业级表单 */
+.banho-form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.banho-form-label {
+    display: block;
+    font-family: var(--font-family-base);
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: var(--space-sm);
+    font-size: 0.875rem;
+}
+
+.banho-form-control {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+    background-color: white;
+}
+
+.banho-form-control:focus {
+    outline: none;
+    border-color: var(--banho-primary);
+    box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+}
+
+.banho-form-control.is-invalid {
+    border-color: var(--error);
+}
+
+.banho-form-control.is-valid {
+    border-color: var(--success);
+}
+
+/* 企业级表格 */
+.banho-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.banho-table th {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-light) 100%);
+    color: white;
+    font-family: var(--font-family-heading);
+    font-weight: 600;
+    text-align: left;
+    padding: var(--space-md);
+    font-size: 0.875rem;
+}
+
+.banho-table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--gray-200);
+    font-size: 0.875rem;
+}
+
+.banho-table tr:hover {
+    background-color: var(--gray-50);
+}
+
+/* 企业级状态徽章 */
+.banho-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-family-base);
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--radius-xl);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.banho-badge-success {
+    background-color: rgba(5, 150, 105, 0.1);
+    color: var(--success);
+}
+
+.banho-badge-warning {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: var(--warning);
+}
+
+.banho-badge-error {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--error);
+}
+
+.banho-badge-info {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--info);
+}
+
+/* 企业级侧边栏 */
+.banho-sidebar {
+    background: linear-gradient(180deg, var(--banho-primary) 0%, var(--banho-primary-dark) 100%);
+    min-height: 100vh;
+    color: white;
+    box-shadow: var(--shadow-xl);
+}
+
+.banho-sidebar-header {
+    padding: var(--space-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.banho-sidebar-nav {
+    padding: var(--space-lg);
+}
+
+.banho-sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    margin-bottom: var(--space-sm);
+}
+
+.banho-sidebar-nav-item:hover,
+.banho-sidebar-nav-item.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* 企业级统计卡片 */
+.banho-stat-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--banho-secondary);
+    transition: all var(--transition-base);
+}
+
+.banho-stat-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+.banho-stat-value {
+    font-family: var(--font-family-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--banho-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.banho-stat-label {
+    font-family: var(--font-family-base);
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* 企业级加载动画 */
+.banho-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--gray-300);
+    border-radius: 50%;
+    border-top-color: var(--banho-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 企业级通知 */
+.banho-alert {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    border-left: 4px solid;
+}
+
+.banho-alert-success {
+    background-color: rgba(5, 150, 105, 0.1);
+    border-left-color: var(--success);
+    color: var(--success);
+}
+
+.banho-alert-warning {
+    background-color: rgba(217, 119, 6, 0.1);
+    border-left-color: var(--warning);
+    color: var(--warning);
+}
+
+.banho-alert-error {
+    background-color: rgba(220, 38, 38, 0.1);
+    border-left-color: var(--error);
+    color: var(--error);
+}
+
+.banho-alert-info {
+    background-color: rgba(37, 99, 235, 0.1);
+    border-left-color: var(--info);
+    color: var(--info);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .banho-navbar {
+        padding: var(--space-md);
+    }
+    
+    .banho-card {
+        margin-bottom: var(--space-lg);
+    }
+    
+    .banho-table {
+        font-size: 0.75rem;
+    }
+    
+    .banho-table th,
+    .banho-table td {
+        padding: var(--space-sm);
+    }
+}
+
+/* 企业级动画 */
+.banho-fade-in {
+    animation: fadeIn var(--transition-slow) ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banho-slide-up {
+    animation: slideUp var(--transition-base) ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 企业级打印样式 */
+@media print {
+    .banho-sidebar,
+    .banho-navbar {
+        display: none;
+    }
+    
+    .banho-card {
+        box-shadow: none;
+        border: 1px solid var(--gray-300);
+    }
+}

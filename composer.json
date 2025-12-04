@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "laravel/reverb": "^1.0",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -89,6 +90,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": [{
+        "name": "packagist",
+        "type": "composer",
+        "url": "https://mirrors.aliyun.com/composer/"
+    },{
         "type": "composer",
         "url": "https://packagist.jp"
     }]

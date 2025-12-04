@@ -2,16 +2,31 @@
     "$schema": "https://www.schemastore.org/package.json",
     "private": true,
     "type": "module",
+    "name": "banho-b2b-portal",
+    "version": "2.0.0",
+    "description": "万方商事 B2B 采购门户 - 企业级应用",
     "scripts": {
+        "dev": "vite",
         "build": "vite build",
-        "dev": "vite"
+        "preview": "vite preview",
+        "lint": "eslint resources/js --ext .js,.vue",
+        "lint:fix": "eslint resources/js --ext .js,.vue --fix",
+        "format": "prettier --write resources/**/*.{js,vue,css,scss}",
+        "analyze": "vite-bundle-analyzer dist",
+        "test": "vitest",
+        "test:coverage": "vitest --coverage"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
+        "laravel-vite-plugin": "^1.0.5",
+        "prettier": "^3.2.0",
+        "sass": "^1.69.0",
         "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
+        "vite": "^5.4.0",
+        "vite-bundle-analyzer": "^0.7.0",
+        "vitest": "^1.0.0",
+        "chart.js": "^4.4.0"
     }
 }

@@ -1,0 +1,341 @@
+# 万方商事 B2B 采购门户业务指标告警
+# 业务逻辑和用户体验监控
+
+groups:
+  # ================================
+  # 用户活动告警
+  # ================================
+  - name: business.user.rules
+    rules:
+      # 新用户注册率异常
+      - alert: LowUserRegistrationRate
+        expr: rate(banho_users_registered_total[1h]) < 1
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          category: user
+        annotations:
+          summary: "新用户注册率过低"
+          description: "过去 1 小时新用户注册数少于 1 个，当前值: {{ $value }}"
+
+      # 用户登录失败率过高
+      - alert: HighUserLoginFailureRate
+        expr: rate(banho_user_login_failures_total[5m]) / rate(banho_user_login_attempts_total[5m]) * 100 > 20
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: user
+        annotations:
+          summary: "用户登录失败率过高"
+          description: "用户登录失败率超过 20%，当前值: {{ $value }}%"
+
+      - alert: CriticalUserLoginFailureRate
+        expr: rate(banho_user_login_failures_total[5m]) / rate(banho_user_login_attempts_total[5m]) * 100 > 50
+        for: 2m
+        labels:
+          severity: critical
+          service: business
+          category: user
+        annotations:
+          summary: "用户登录失败率严重过高"
+          description: "用户登录失败率超过 50%，可能存在攻击行为，当前值: {{ $value }}%"
+
+      # 活跃用户数异常
+      - alert: LowActiveUserCount
+        expr: banho_active_users_total < 10
+        for: 30m
+        labels:
+          severity: warning
+          service: business
+          category: user
+        annotations:
+          summary: "活跃用户数过低"
+          description: "当前活跃用户数少于 10 个，当前值: {{ $value }}"
+
+  # ================================
+  # 订单业务告警
+  # ================================
+  - name: business.order.rules
+    rules:
+      # 订单创建率异常
+      - alert: LowOrderCreationRate
+        expr: rate(banho_orders_created_total[1h]) < 0.5
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          category: order
+        annotations:
+          summary: "订单创建率过低"
+          description: "过去 1 小时订单创建数少于 0.5 个/小时，当前值: {{ $value }}"
+
+      # 订单支付失败率过高
+      - alert: HighOrderPaymentFailureRate
+        expr: rate(banho_orders_payment_failed_total[5m]) / rate(banho_orders_payment_attempts_total[5m]) * 100 > 15
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: order
+        annotations:
+          summary: "订单支付失败率过高"
+          description: "订单支付失败率超过 15%，当前值: {{ $value }}%"
+
+      # 订单取消率过高
+      - alert: HighOrderCancellationRate
+        expr: rate(banho_orders_cancelled_total[1h]) / rate(banho_orders_created_total[1h]) * 100 > 30
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          category: order
+        annotations:
+          summary: "订单取消率过高"
+          description: "订单取消率超过 30%，当前值: {{ $value }}%"
+
+      # 大额订单异常
+      - alert: HighValueOrder
+        expr: banho_order_value_total > 1000000  # 100万日元
+        for: 0m
+        labels:
+          severity: info
+          service: business
+          category: order
+        annotations:
+          summary: "大额订单告警"
+          description: "检测到大额订单，金额: {{ $value }} 日元"
+
+  # ================================
+  # 产品业务告警
+  # ================================
+  - name: business.product.rules
+    rules:
+      # 产品库存不足
+      - alert: LowProductStock
+        expr: banho_product_stock_quantity < 10
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: product
+        annotations:
+          summary: "产品库存不足"
+          description: "产品 {{ $labels.product_name }} 库存不足，当前库存: {{ $value }}"
+
+      - alert: CriticalProductStock
+        expr: banho_product_stock_quantity < 1
+        for: 0m
+        labels:
+          severity: critical
+          service: business
+          category: product
+        annotations:
+          summary: "产品库存耗尽"
+          description: "产品 {{ $labels.product_name }} 库存已耗尽"
+
+      # 产品浏览量异常
+      - alert: LowProductViewRate
+        expr: rate(banho_product_views_total[1h]) < 5
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          category: product
+        annotations:
+          summary: "产品浏览量过低"
+          description: "产品浏览量过低，可能存在前端问题，当前值: {{ $value }}/小时"
+
+  # ================================
+  # 询价业务告警
+  # ================================
+  - name: business.inquiry.rules
+    rules:
+      # 询价响应时间过长
+      - alert: SlowInquiryResponse
+        expr: banho_inquiry_response_time_hours > 24
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          category: inquiry
+        annotations:
+          summary: "询价响应时间过长"
+          description: "询价 {{ $labels.inquiry_id }} 响应时间超过 24 小时，当前值: {{ $value }} 小时"
+
+      # 待处理询价积压
+      - alert: InquiryBacklog
+        expr: banho_inquiries_pending_total > 50
+        for: 30m
+        labels:
+          severity: warning
+          service: business
+          category: inquiry
+        annotations:
+          summary: "询价积压告警"
+          description: "待处理询价数量超过 50 个，当前值: {{ $value }}"
+
+      # 询价转化率过低
+      - alert: LowInquiryConversionRate
+        expr: rate(banho_inquiries_converted_total[7d]) / rate(banho_inquiries_created_total[7d]) * 100 < 10
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          category: inquiry
+        annotations:
+          summary: "询价转化率过低"
+          description: "询价转化率低于 10%，当前值: {{ $value }}%"
+
+  # ================================
+  # 批量采购告警
+  # ================================
+  - name: business.bulk_purchase.rules
+    rules:
+      # 批量采购请求异常
+      - alert: BulkPurchaseRequestSpike
+        expr: rate(banho_bulk_purchase_requests_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: business
+          category: bulk_purchase
+        annotations:
+          summary: "批量采购请求激增"
+          description: "批量采购请求率异常，当前值: {{ $value }}/分钟"
+
+      # 批量采购处理时间过长
+      - alert: SlowBulkPurchaseProcessing
+        expr: banho_bulk_purchase_processing_time_minutes > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: bulk_purchase
+        annotations:
+          summary: "批量采购处理时间过长"
+          description: "批量采购处理时间超过 30 分钟，当前值: {{ $value }} 分钟"
+
+  # ================================
+  # API 业务告警
+  # ================================
+  - name: business.api.rules
+    rules:
+      # API 调用率异常
+      - alert: LowAPICallRate
+        expr: rate(banho_api_requests_total[1h]) < 10
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          category: api
+        annotations:
+          summary: "API 调用率过低"
+          description: "API 调用率异常，可能存在服务问题，当前值: {{ $value }}/小时"
+
+      # API 认证失败率过高
+      - alert: HighAPIAuthFailureRate
+        expr: rate(banho_api_auth_failures_total[5m]) / rate(banho_api_auth_attempts_total[5m]) * 100 > 25
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: api
+        annotations:
+          summary: "API 认证失败率过高"
+          description: "API 认证失败率超过 25%，当前值: {{ $value }}%"
+
+      # 第三方 API 错误率过高
+      - alert: HighThirdPartyAPIErrorRate
+        expr: rate(banho_third_party_api_errors_total[5m]) / rate(banho_third_party_api_requests_total[5m]) * 100 > 10
+        for: 3m
+        labels:
+          severity: warning
+          service: business
+          category: api
+        annotations:
+          summary: "第三方 API 错误率过高"
+          description: "第三方 API 错误率超过 10%，当前值: {{ $value }}%"
+
+  # ================================
+  # 财务业务告警
+  # ================================
+  - name: business.finance.rules
+    rules:
+      # 日收入异常
+      - alert: LowDailyRevenue
+        expr: banho_daily_revenue_yen < 100000  # 10万日元
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          category: finance
+        annotations:
+          summary: "日收入过低"
+          description: "日收入低于 10 万日元，当前值: {{ $value }} 日元"
+
+      # 退款率过高
+      - alert: HighRefundRate
+        expr: rate(banho_refunds_total[7d]) / rate(banho_orders_paid_total[7d]) * 100 > 5
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+          category: finance
+        annotations:
+          summary: "退款率过高"
+          description: "退款率超过 5%，当前值: {{ $value }}%"
+
+      # 平均订单价值异常
+      - alert: LowAverageOrderValue
+        expr: banho_average_order_value_yen < 5000  # 5000日元
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+          category: finance
+        annotations:
+          summary: "平均订单价值过低"
+          description: "平均订单价值低于 5000 日元，当前值: {{ $value }} 日元"
+
+  # ================================
+  # 用户体验告警
+  # ================================
+  - name: business.ux.rules
+    rules:
+      # 页面加载时间过长
+      - alert: SlowPageLoadTime
+        expr: histogram_quantile(0.95, rate(banho_page_load_duration_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: ux
+        annotations:
+          summary: "页面加载时间过长"
+          description: "95% 页面加载时间超过 5 秒，当前值: {{ $value }} 秒"
+
+      # 用户跳出率过高
+      - alert: HighBounceRate
+        expr: banho_bounce_rate * 100 > 70
+        for: 30m
+        labels:
+          severity: warning
+          service: business
+          category: ux
+        annotations:
+          summary: "用户跳出率过高"
+          description: "用户跳出率超过 70%，当前值: {{ $value }}%"
+
+      # 搜索无结果率过高
+      - alert: HighSearchNoResultRate
+        expr: rate(banho_search_no_results_total[5m]) / rate(banho_search_requests_total[5m]) * 100 > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: business
+          category: ux
+        annotations:
+          summary: "搜索无结果率过高"
+          description: "搜索无结果率超过 30%，当前值: {{ $value }}%"

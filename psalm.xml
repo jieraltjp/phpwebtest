@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="3"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <!-- 项目信息 -->
+    <projectFiles>
+        <directory name="app"/>
+        <directory name="config"/>
+        <directory name="database/factories"/>
+        <directory name="database/seeders"/>
+        <directory name="routes"/>
+        <ignoreFiles>
+            <directory name="bootstrap"/>
+            <directory name="storage"/>
+            <directory name="vendor"/>
+            <directory name="node_modules"/>
+            <file name="app/Console/Kernel.php"/>
+            <file name="app/Exceptions/Handler.php"/>
+            <file name="app/Http/Kernel.php"/>
+            <file name="public/index.php"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <!-- 插件配置 -->
+    <plugins>
+        <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
+    </plugins>
+
+    <!-- 错误级别 -->
+    <issueHandlers>
+        <!-- Laravel 相关忽略 -->
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Laravel\Ui\UiServiceProvider"/>
+                <referencedClass name="Laravel\Sanctum\SanctumServiceProvider"/>
+            </errorLevel>
+        </UndefinedClass>
+
+        <!-- 动态属性 -->
+        <UndefinedProperty>
+            <errorLevel type="suppress">
+                <referencedProperty name="Illuminate\Database\Eloquent\Model::$*"/>
+                <referencedProperty name="Illuminate\Http\Request::$*"/>
+            </errorLevel>
+        </UndefinedProperty>
+
+        <!-- 动态方法 -->
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="Illuminate\Database\Eloquent\Builder::*"/>
+                <referencedMethod name="Illuminate\Http\Request::*"/>
+                <referencedMethod name="Illuminate\Contracts\View\View::*"/>
+            </errorLevel>
+        </UndefinedMethod>
+
+        <!-- 混合返回类型 -->
+        <MixedReturnStatement>
+            <errorLevel type="info"/>
+        </MixedReturnStatement>
+
+        <!-- 混合参数 -->
+        <MixedArgument>
+            <errorLevel type="info"/>
+        </MixedArgument>
+
+        <!-- 数组访问 -->
+        <MixedArrayAccess>
+            <errorLevel type="info"/>
+        </MixedArrayAccess>
+
+        <!-- 数组赋值 -->
+        <MixedArrayAssignment>
+            <errorLevel type="info"/>
+        </MixedArrayAssignment>
+
+        <!-- 属性赋值 -->
+        <MixedPropertyAssignment>
+            <errorLevel type="info"/>
+        </MixedPropertyAssignment>
+
+        <!-- 方法调用 -->
+        <MixedMethodCall>
+            <errorLevel type="info"/>
+        </MixedMethodCall>
+
+        <!-- 字符串操作 -->
+        <MixedStringOffsetAssignment>
+            <errorLevel type="info"/>
+        </MixedStringOffsetAssignment>
+
+        <!-- 可能为 null 的参数 -->
+        <PossiblyNullArgument>
+            <errorLevel type="info"/>
+        </PossiblyNullArgument>
+
+        <!-- 可能为 null 的返回 -->
+        <PossiblyNullReturn>
+            <errorLevel type="info"/>
+        </PossiblyNullReturn>
+
+        <!-- 可能为 null 的属性访问 -->
+        <PossiblyNullPropertyFetch>
+            <errorLevel type="info"/>
+        </PossiblyNullPropertyFetch>
+
+        <!-- 可能未定义的变量 -->
+        <PossiblyUndefinedVariable>
+            <errorLevel type="info"/>
+        </PossiblyUndefinedVariable>
+
+        <!-- 可能未定义的数组偏移 -->
+        <PossiblyUndefinedArrayOffset>
+            <errorLevel type="info"/>
+        </PossiblyUndefinedArrayOffset>
+
+        <!-- 无效参数 -->
+        <InvalidArgument>
+            <errorLevel type="info"/>
+        </InvalidArgument>
+
+        <!-- 无效返回 -->
+        <InvalidReturnStatement>
+            <errorLevel type="info"/>
+        </InvalidReturnStatement>
+
+        <!-- 无效属性赋值 -->
+        <InvalidPropertyAssignmentValue>
+            <errorLevel type="info"/>
+        </InvalidPropertyAssignmentValue>
+
+        <!-- 不安全的继承 -->
+        <UnsafeInstantiation>
+            <errorLevel type="info"/>
+        </UnsafeInstantiation>
+
+        <!-- 文件操作 -->
+        <UnresolvableInclude>
+            <errorLevel type="suppress"/>
+        </UnresolvableInclude>
+    </issueHandlers>
+
+    <!-- 缓存配置 -->
+    <cache>
+        <directory>storage/psalm</directory>
+    </cache>
+
+    <!-- 死代码检测 -->
+    <findUnusedCode>
+        <unusedVariables>
+            <excludeFile name="routes/*"/>
+        </unusedVariables>
+        <unusedPrivateProperties>true</unusedPrivateProperties>
+        <unusedPrivateMethods>true</unusedPrivateMethods>
+    </findUnusedCode>
+
+    <!-- 严格类型检查 -->
+    <strictTypes>
+        <allRules>true</allRules>
+    </strictTypes>
+
+    <!-- 内存限制 -->
+    <memoryLimit>2G</memoryLimit>
+
+    <!-- 并行处理 -->
+    <threads>16</threads>
+
+    <!-- 输出格式 -->
+    <reportInfo>
+        <file>storage/psalm/report.txt</file>
+    </reportInfo>
+
+    <!-- 错误基线 -->
+    <errorBaseline file="storage/psalm/baseline.xml"/>
+
+    <!-- 自定义存根 -->
+    <stubs>
+        <file name="stubs/Laravel.stub"/>
+        <file name="stubs/Carbon.stub"/>
+    </stubs>
+
+    <!-- 类型别名 -->
+    <typeAliases>
+        <typeAlias name="UserId" type="int"/>
+        <typeAlias name="ProductId" type="int"/>
+        <typeAlias name="OrderId" type="int"/>
+        <typeAlias name="InquiryId" type="int"/>
+        <typeAlias name="Currency" type="'CNY'|'JPY'|'USD'"/>
+        <typeAlias name="OrderStatus" type="'pending'|'processing'|'shipped'|'delivered'|'cancelled'"/>
+        <typeAlias name="InquiryStatus" type="'pending'|'quoted'|'accepted'|'rejected'|'expired'"/>
+    </typeAliases>
+
+    <!-- 方法签名 -->
+    <methodSignatures>
+        <methodSignature name="App\Models\User::create" returns="App\Models\User"/>
+        <methodSignature name="App\Models\Product::create" returns="App\Models\Product"/>
+        <methodSignature name="App\Models\Order::create" returns="App\Models\Order"/>
+        <methodSignature name="App\Models\Inquiry::create" returns="App\Models\Inquiry"/>
+    </methodSignatures>
+
+    <!-- 模板类型 -->
+    <templateTypes>
+        <templateType name="TModel" as="App\Models\Model"/>
+        <templateType name="TCollection" as="Illuminate\Database\Eloquent\Collection"/>
+    </templateTypes>
+
+    <!-- 泛型类型 -->
+    <genericTypes>
+        <genericType name="Collection" typeParams="TKey, TValue"/>
+        <genericType name="Builder" typeParams="TModel"/>
+    </genericTypes>
+</psalm>

@@ -1,0 +1,310 @@
+# 万方商事 B2B 采购门户性能测试配置
+# Artillery 负载测试
+
+config:
+  target: '{{ $processEnvironment.TARGET_URL || "http://localhost:8000" }}'
+  phases:
+    # 预热阶段
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    
+    # 正常负载
+    - duration: 300
+      arrivalRate: 20
+      name: "Normal load"
+    
+    # 峰值负载
+    - duration: 120
+      arrivalRate: 50
+      name: "Peak load"
+    
+    # 压力测试
+    - duration: 60
+      arrivalRate: 100
+      name: "Stress test"
+    
+    # 恢复阶段
+    - duration: 180
+      arrivalRate: 10
+      name: "Recovery"
+
+  processor: "./test-processor.js"
+  
+  # 默认请求配置
+  defaults:
+    headers:
+      User-Agent: "Artillery/LoadTest"
+      Accept: "application/json"
+      Content-Type: "application/json"
+    
+    # 超时配置
+    timeout: 30
+    
+    # 捕获响应
+    capture:
+      - json: "$.token"
+        as: "authToken"
+      - json: "$.user.id"
+        as: "userId"
+
+# ================================
+# 测试场景
+# ================================
+scenarios:
+  # ================================
+  # 健康检查
+  # ================================
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+            - hasText: "healthy"
+
+  # ================================
+  # 用户认证流程
+  # ================================
+  - name: "User Authentication"
+    weight: 20
+    flow:
+      # 用户登录
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@manpou.jp"
+            password: "password123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+            - json: "$.user.id"
+              as: "userId"
+          expect:
+            - statusCode: 200
+            - hasText: "token"
+            - hasText: "user"
+      
+      # 获取用户信息
+      - get:
+          url: "/api/auth/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+            - hasText: "id"
+            - hasText: "email"
+      
+      # 用户登出
+      - post:
+          url: "/api/auth/logout"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+
+  # ================================
+  # 产品浏览
+  # ================================
+  - name: "Product Browsing"
+    weight: 30
+    flow:
+      # 产品列表
+      - get:
+          url: "/api/products"
+          qs:
+            page: "{{ $randomInt(1, 5) }}"
+            per_page: 20
+          expect:
+            - statusCode: 200
+            - hasText: "data"
+            - hasText: "links"
+      
+      # 产品搜索
+      - get:
+          url: "/api/products"
+          qs:
+            search: "办公椅"
+            category: "furniture"
+          expect:
+            - statusCode: 200
+            - hasText: "data"
+      
+      # 产品详情
+      - get:
+          url: "/api/products/{{ $randomInt(1, 5) }}"
+          expect:
+            - statusCode: 200
+            - hasText: "id"
+            - hasText: "name"
+            - hasText: "price"
+
+  # ================================
+  # 订单管理
+  # ================================
+  - name: "Order Management"
+    weight: 25
+    flow:
+      # 先登录获取令牌
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@manpou.jp"
+            password: "password123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+          expect:
+            - statusCode: 200
+      
+      # 创建订单
+      - post:
+          url: "/api/orders"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            items:
+              - product_id: "{{ $randomInt(1, 5) }}"
+                quantity: "{{ $randomInt(1, 3) }}"
+                price: "{{ $randomFloat(100, 1000) }}"
+            shipping_address:
+              address: "東京都千代田区丸の内1-1-1"
+              city: "東京都"
+              postal_code: "100-0001"
+              country: "日本"
+          capture:
+            - json: "$.data.id"
+              as: "orderId"
+          expect:
+            - statusCode: 201
+            - hasText: "id"
+      
+      # 获取订单详情
+      - get:
+          url: "/api/orders/{{ orderId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+            - hasText: "id"
+            - hasText: "items"
+      
+      # 获取订单列表
+      - get:
+          url: "/api/orders"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          qs:
+            page: 1
+            per_page: 10
+          expect:
+            - statusCode: 200
+            - hasText: "data"
+
+  # ================================
+  # 询价业务
+  # ================================
+  - name: "Inquiry Process"
+    weight: 10
+    flow:
+      # 先登录获取令牌
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@manpou.jp"
+            password: "password123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+          expect:
+            - statusCode: 200
+      
+      # 创建询价
+      - post:
+          url: "/api/inquiries"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            subject: "批量采购询价 - {{ $randomString(10) }}"
+            message: "我们需要采购一批办公用品，请提供报价。"
+            contact_info:
+              name: "山田太郎"
+              email: "yamada@company.jp"
+              phone: "03-1234-5678"
+              company: "株式会社テスト"
+            products:
+              - product_id: "{{ $randomInt(1, 3) }}"
+                quantity: "{{ $randomInt(10, 100) }}"
+                specifications: "需要定制颜色"
+          capture:
+            - json: "$.data.id"
+              as: "inquiryId"
+          expect:
+            - statusCode: 201
+            - hasText: "id"
+      
+      # 获取询价详情
+      - get:
+          url: "/api/inquiries/{{ inquiryId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          expect:
+            - statusCode: 200
+            - hasText: "id"
+            - hasText: "subject"
+
+  # ================================
+  # 批量采购
+  # ================================
+  - name: "Bulk Purchase"
+    weight: 5
+    flow:
+      # 先登录获取令牌
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@manpou.jp"
+            password: "password123"
+          capture:
+            - json: "$.token"
+              as: "authToken"
+          expect:
+            - statusCode: 200
+      
+      # 批量采购报价
+      - post:
+          url: "/api/bulk-purchase/quote"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            items:
+              - product_sku: "ALIBABA_SKU_A123"
+                quantity: "{{ $randomInt(10, 50) }}"
+              - product_sku: "ALIBABA_SKU_B456"
+                quantity: "{{ $randomInt(5, 25) }}"
+              - product_sku: "ALIBABA_SKU_C789"
+                quantity: "{{ $randomInt(20, 100) }}"
+          expect:
+            - statusCode: 200
+            - hasText: "total_amount"
+            - hasText: "discount_rate"
+
+# ================================
+# 自定义处理器
+# ================================
+# test-processor.js 内容：
+# 
+# module.exports = {
+#   beforeRequest: function(requestParams, context, ee, next) {
+#     // 添加请求ID
+#     requestParams.headers['X-Request-ID'] = Math.random().toString(36).substr(2, 9);
+#     return next();
+#   },
+#   
+#   afterResponse: function(requestParams, response, context, ee, next) {
+#     // 记录响应时间
+#     console.log(`Response time: ${response.timings.phases.total}ms`);
+#     return next();
+#   }
+# };

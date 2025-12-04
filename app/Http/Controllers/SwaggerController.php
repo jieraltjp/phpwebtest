@@ -2,46 +2,849 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 class SwaggerController extends Controller
 {
-    /**
-     * 显示 Swagger 文档页面
-     */
     public function index()
     {
         return view('swagger.index');
     }
 
-    /**
-     * 获取 OpenAPI 规范 JSON
-     */
+    public function interactive()
+    {
+        return view('swagger.interactive');
+    }
+
     public function openApi()
     {
-        $config = config('swagger.api');
-        
         $openApi = [
             'openapi' => '3.0.0',
             'info' => [
-                'title' => $config['title'],
-                'description' => $config['description'],
-                'version' => $config['version'],
-                'contact' => $config['contact'],
-                'license' => $config['license'],
+                'title' => '雅虎 B2B 采购门户 API',
+                'version' => '1.4.0',
+                'description' => '供雅虎客户后台使用的核心采购流程 API 契约。包含用户认证、产品管理、订单处理、询价管理、批量采购和物流追踪等功能。',
+                'contact' => [
+                    'name' => 'RAKUMART 技术支持',
+                    'email' => 'support@rakumart.com',
+                ],
+                'license' => [
+                    'name' => 'MIT',
+                    'url' => 'https://opensource.org/licenses/MIT',
+                ],
             ],
-            'servers' => $config['servers'],
-            'paths' => $this->getPaths(),
+            'servers' => [
+                [
+                    'url' => env('APP_URL', 'http://localhost:8000') . '/api',
+                    'description' => '开发环境 API',
+                ],
+                [
+                    'url' => 'https://api.rakumart.com/api',
+                    'description' => '生产环境 API',
+                ],
+            ],
             'components' => [
-                'securitySchemes' => $config['security'],
-                'schemas' => $this->getSchemas(),
+                'securitySchemes' => [
+                    'bearerAuth' => [
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'JWT',
+                        'description' => 'JWT 认证令牌',
+                    ],
+                ],
+                'schemas' => [
+                    'User' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'id' => ['type' => 'integer', 'example' => 1],
+                            'name' => ['type' => 'string', 'example' => '测试用户'],
+                            'username' => ['type' => 'string', 'example' => 'testuser'],
+                            'email' => ['type' => 'string', 'example' => 'test@example.com'],
+                            'company' => ['type' => 'string', 'example' => '测试公司'],
+                            'created_at' => ['type' => 'string', 'format' => 'date-time'],
+                            'last_login_at' => ['type' => 'string', 'format' => 'date-time'],
+                        ],
+                    ],
+                    'Product' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'id' => ['type' => 'integer', 'example' => 1],
+                            'name' => ['type' => 'string', 'example' => 'iPhone 15 Pro'],
+                            'sku' => ['type' => 'string', 'example' => 'IP15P001'],
+                            'description' => ['type' => 'string', 'example' => '最新款 iPhone'],
+                            'price' => ['type' => 'number', 'format' => 'float', 'example' => 8999.00],
+                            'currency' => ['type' => 'string', 'example' => 'CNY'],
+                            'stock' => ['type' => 'integer', 'example' => 100],
+                            'category' => ['type' => 'string', 'example' => '电子产品'],
+                        ],
+                    ],
+                    'ApiResponse' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'status' => ['type' => 'string', 'example' => 'success'],
+                            'message' => ['type' => 'string', 'example' => '操作成功'],
+                            'data' => ['type' => 'object'],
+                            'timestamp' => ['type' => 'string', 'format' => 'date-time'],
+                        ],
+                    ],
+                    'ErrorResponse' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'status' => ['type' => 'string', 'example' => 'error'],
+                            'message' => ['type' => 'string', 'example' => '操作失败'],
+                            'errors' => ['type' => 'object'],
+                            'timestamp' => ['type' => 'string', 'format' => 'date-time'],
+                        ],
+                    ],
+                ],
             ],
-            'tags' => $config['tags'],
+            'paths' => [
+                '/auth/login' => [
+                    'post' => [
+                        'summary' => '用户登录',
+                        'description' => '使用用户名和密码进行登录认证',
+                        'tags' => ['Authentication'],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['username', 'password'],
+                                        'properties' => [
+                                            'username' => [
+                                                'type' => 'string',
+                                                'description' => '用户名',
+                                                'example' => 'testuser',
+                                            ],
+                                            'password' => [
+                                                'type' => 'string',
+                                                'description' => '密码',
+                                                'example' => 'password123',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '登录成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'message' => '登录成功',
+                                            'data' => [
+                                                'access_token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
+                                                'token_type' => 'bearer',
+                                                'expires_in' => 3600,
+                                                'user' => [
+                                                    'id' => 1,
+                                                    'name' => '测试用户',
+                                                    'username' => 'testuser',
+                                                    'email' => 'test@example.com',
+                                                    'company' => '测试公司',
+                                                ],
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            '401' => [
+                                'description' => '认证失败',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ErrorResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'error',
+                                            'message' => '用户名或密码错误',
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/auth/register' => [
+                    'post' => [
+                        'summary' => '用户注册',
+                        'description' => '创建新用户账户',
+                        'tags' => ['Authentication'],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['name', 'username', 'email', 'password', 'password_confirmation'],
+                                        'properties' => [
+                                            'name' => [
+                                                'type' => 'string',
+                                                'description' => '用户姓名',
+                                                'example' => '张三',
+                                            ],
+                                            'username' => [
+                                                'type' => 'string',
+                                                'description' => '用户名',
+                                                'example' => 'zhangsan',
+                                            ],
+                                            'email' => [
+                                                'type' => 'string',
+                                                'format' => 'email',
+                                                'description' => '邮箱地址',
+                                                'example' => 'zhangsan@example.com',
+                                            ],
+                                            'password' => [
+                                                'type' => 'string',
+                                                'description' => '密码（至少8位，包含大小写字母、数字和特殊字符）',
+                                                'example' => 'Password123!',
+                                            ],
+                                            'password_confirmation' => [
+                                                'type' => 'string',
+                                                'description' => '确认密码',
+                                                'example' => 'Password123!',
+                                            ],
+                                            'company' => [
+                                                'type' => 'string',
+                                                'description' => '公司名称（可选）',
+                                                'example' => '测试公司',
+                                            ],
+                                            'phone' => [
+                                                'type' => 'string',
+                                                'description' => '电话号码（可选）',
+                                                'example' => '+8613800138000',
+                                            ],
+                                            'address' => [
+                                                'type' => 'string',
+                                                'description' => '地址（可选）',
+                                                'example' => '北京市朝阳区',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => [
+                                'description' => '注册成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'message' => '注册成功',
+                                            'data' => [
+                                                'user' => [
+                                                    'id' => 2,
+                                                    'name' => '张三',
+                                                    'username' => 'zhangsan',
+                                                    'email' => 'zhangsan@example.com',
+                                                    'company' => '测试公司',
+                                                ],
+                                                'access_token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
+                                                'token_type' => 'bearer',
+                                                'expires_in' => 3600,
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            '422' => [
+                                'description' => '验证失败',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ErrorResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'error',
+                                            'message' => 'Validation failed',
+                                            'errors' => [
+                                                'email' => ['邮箱已被使用'],
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/auth/me' => [
+                    'get' => [
+                        'summary' => '获取当前用户信息',
+                        'description' => '获取当前登录用户的详细信息',
+                        'tags' => ['Authentication'],
+                        'security' => [['bearerAuth' => []]],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'message' => '获取用户信息成功',
+                                            'data' => [
+                                                'id' => 1,
+                                                'name' => '测试用户',
+                                                'username' => 'testuser',
+                                                'email' => 'test@example.com',
+                                                'company' => '测试公司',
+                                                'created_at' => '2025-12-03T13:50:34.000000Z',
+                                                'last_login_at' => '2025-12-04T10:30:00.000000Z',
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            '401' => [
+                                'description' => '未认证',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ErrorResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'error',
+                                            'message' => '认证失败，请重新登录',
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/auth/logout' => [
+                    'post' => [
+                        'summary' => '退出登录',
+                        'description' => '退出当前用户的登录状态',
+                        'tags' => ['Authentication'],
+                        'security' => [['bearerAuth' => []]],
+                        'responses' => [
+                            '200' => [
+                                'description' => '退出成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'message' => '退出登录成功',
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/auth/check-username' => [
+                    'post' => [
+                        'summary' => '检查用户名可用性',
+                        'description' => '检查用户名是否已被注册',
+                        'tags' => ['Authentication'],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['username'],
+                                        'properties' => [
+                                            'username' => [
+                                                'type' => 'string',
+                                                'description' => '要检查的用户名',
+                                                'example' => 'testuser',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '检查成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'data' => [
+                                                'available' => true,
+                                                'message' => '用户名可用',
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/auth/check-email' => [
+                    'post' => [
+                        'summary' => '检查邮箱可用性',
+                        'description' => '检查邮箱是否已被注册',
+                        'tags' => ['Authentication'],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['email'],
+                                        'properties' => [
+                                            'email' => [
+                                                'type' => 'string',
+                                                'format' => 'email',
+                                                'description' => '要检查的邮箱地址',
+                                                'example' => 'test@example.com',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '检查成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                        'example' => [
+                                            'status' => 'success',
+                                            'data' => [
+                                                'available' => false,
+                                                'message' => '邮箱已被注册',
+                                            ],
+                                            'timestamp' => '2025-12-04T10:30:00.000000Z',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/products' => [
+                    'get' => [
+                        'summary' => '获取产品列表',
+                        'description' => '分页获取产品列表，支持搜索和筛选',
+                        'tags' => ['Products'],
+                        'parameters' => [
+                            [
+                                'name' => 'page',
+                                'in' => 'query',
+                                'description' => '页码',
+                                'required' => false,
+                                'schema' => ['type' => 'integer', 'default' => 1],
+                            ],
+                            [
+                                'name' => 'per_page',
+                                'in' => 'query',
+                                'description' => '每页数量',
+                                'required' => false,
+                                'schema' => ['type' => 'integer', 'default' => 20],
+                            ],
+                            [
+                                'name' => 'search',
+                                'in' => 'query',
+                                'description' => '搜索关键词',
+                                'required' => false,
+                                'schema' => ['type' => 'string'],
+                            ],
+                            [
+                                'name' => 'category',
+                                'in' => 'query',
+                                'description' => '产品分类',
+                                'required' => false,
+                                'schema' => ['type' => 'string'],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/products/{id}' => [
+                    'get' => [
+                        'summary' => '获取产品详情',
+                        'description' => '根据ID获取单个产品的详细信息',
+                        'tags' => ['Products'],
+                        'parameters' => [
+                            [
+                                'name' => 'id',
+                                'in' => 'path',
+                                'description' => '产品ID',
+                                'required' => true,
+                                'schema' => ['type' => 'integer'],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            '404' => [
+                                'description' => '产品不存在',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ErrorResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/orders' => [
+                    'get' => [
+                        'summary' => '获取订单列表',
+                        'description' => '获取当前用户的订单列表',
+                        'tags' => ['Orders'],
+                        'security' => [['bearerAuth' => []]],
+                        'parameters' => [
+                            [
+                                'name' => 'page',
+                                'in' => 'query',
+                                'description' => '页码',
+                                'required' => false,
+                                'schema' => ['type' => 'integer', 'default' => 1],
+                            ],
+                            [
+                                'name' => 'per_page',
+                                'in' => 'query',
+                                'description' => '每页数量',
+                                'required' => false,
+                                'schema' => ['type' => 'integer', 'default' => 20],
+                            ],
+                            [
+                                'name' => 'status',
+                                'in' => 'query',
+                                'description' => '订单状态筛选',
+                                'required' => false,
+                                'schema' => [
+                                    'type' => 'string',
+                                    'enum' => ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'post' => [
+                        'summary' => '创建订单',
+                        'description' => '创建新的采购订单',
+                        'tags' => ['Orders'],
+                        'security' => [['bearerAuth' => []]],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['items', 'shipping_address', 'contact_info'],
+                                        'properties' => [
+                                            'items' => [
+                                                'type' => 'array',
+                                                'items' => [
+                                                    'type' => 'object',
+                                                    'required' => ['sku', 'quantity'],
+                                                    'properties' => [
+                                                        'sku' => ['type' => 'string'],
+                                                        'quantity' => ['type' => 'integer'],
+                                                    ],
+                                                ],
+                                            ],
+                                            'shipping_address' => ['type' => 'string'],
+                                            'contact_info' => [
+                                                'type' => 'object',
+                                                'properties' => [
+                                                    'email' => ['type' => 'string'],
+                                                    'phone' => ['type' => 'string'],
+                                                    'contact_person' => ['type' => 'string'],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => [
+                                'description' => '创建成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/inquiries' => [
+                    'get' => [
+                        'summary' => '获取询价列表',
+                        'description' => '获取当前用户的询价列表',
+                        'tags' => ['Inquiries'],
+                        'security' => [['bearerAuth' => []]],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'post' => [
+                        'summary' => '创建询价',
+                        'description' => '创建新的产品询价',
+                        'tags' => ['Inquiries'],
+                        'security' => [['bearerAuth' => []]],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['product_sku', 'quantity', 'contact_info'],
+                                        'properties' => [
+                                            'product_sku' => ['type' => 'string'],
+                                            'quantity' => ['type' => 'integer'],
+                                            'message' => ['type' => 'string'],
+                                            'contact_info' => [
+                                                'type' => 'object',
+                                                'properties' => [
+                                                    'email' => ['type' => 'string'],
+                                                    'phone' => ['type' => 'string'],
+                                                    'contact_person' => ['type' => 'string'],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => [
+                                'description' => '创建成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/bulk-purchase/orders' => [
+                    'post' => [
+                        'summary' => '创建批量采购订单',
+                        'description' => '创建批量采购订单，支持多SKU和折扣计算',
+                        'tags' => ['Bulk Purchase'],
+                        'security' => [['bearerAuth' => []]],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['items', 'shipping_address', 'contact_info'],
+                                        'properties' => [
+                                            'items' => [
+                                                'type' => 'array',
+                                                'maxItems' => 50,
+                                                'items' => [
+                                                    'type' => 'object',
+                                                    'required' => ['sku', 'quantity'],
+                                                    'properties' => [
+                                                        'sku' => ['type' => 'string'],
+                                                        'quantity' => ['type' => 'integer', 'maximum' => 100000],
+                                                    ],
+                                                ],
+                                            ],
+                                            'shipping_address' => ['type' => 'string'],
+                                            'contact_info' => [
+                                                'type' => 'object',
+                                                'properties' => [
+                                                    'email' => ['type' => 'string'],
+                                                    'phone' => ['type' => 'string'],
+                                                    'contact_person' => ['type' => 'string'],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => [
+                                'description' => '创建成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/bulk-purchase/quote' => [
+                    'post' => [
+                        'summary' => '获取批量采购报价',
+                        'description' => '获取批量采购的折扣报价，不创建订单',
+                        'tags' => ['Bulk Purchase'],
+                        'security' => [['bearerAuth' => []]],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['items'],
+                                        'properties' => [
+                                            'items' => [
+                                                'type' => 'array',
+                                                'maxItems' => 50,
+                                                'items' => [
+                                                    'type' => 'object',
+                                                    'required' => ['sku', 'quantity'],
+                                                    'properties' => [
+                                                        'sku' => ['type' => 'string'],
+                                                        'quantity' => ['type' => 'integer'],
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => '获取成功',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/ApiResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/health' => [
+                    'get' => [
+                        'summary' => '健康检查',
+                        'description' => '检查API服务状态',
+                        'tags' => ['System'],
+                        'responses' => [
+                            '200' => [
+                                'description' => '服务正常',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'status' => ['type' => 'string', 'example' => 'ok'],
+                                                'timestamp' => ['type' => 'string', 'format' => 'date-time'],
+                                                'version' => ['type' => 'string', 'example' => '1.4.0'],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'tags' => [
+                [
+                    'name' => 'Authentication',
+                    'description' => '用户认证相关接口',
+                ],
+                [
+                    'name' => 'Products',
+                    'description' => '产品管理相关接口',
+                ],
+                [
+                    'name' => 'Orders',
+                    'description' => '订单管理相关接口',
+                ],
+                [
+                    'name' => 'Inquiries',
+                    'description' => '询价管理相关接口',
+                ],
+                [
+                    'name' => 'Bulk Purchase',
+                    'description' => '批量采购相关接口',
+                ],
+                [
+                    'name' => 'System',
+                    'description' => '系统相关接口',
+                ],
+            ],
         ];
 
         return response()->json($openApi);
     }
+}
 
     /**
      * 获取 API 路径定义

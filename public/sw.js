@@ -3,8 +3,9 @@
  * 提供离线缓存、后台同步等功能
  */
 
-const CACHE_NAME = 'b2b-portal-v1.0.0';
+const CACHE_NAME = 'b2b-portal-v2.1.0';
 const RUNTIME_CACHE = 'b2b-portal-runtime';
+const OFFLINE_CACHE = 'b2b-portal-offline';
 
 // 需要缓存的资源
 const STATIC_CACHE_URLS = [
@@ -13,12 +14,20 @@ const STATIC_CACHE_URLS = [
     '/products',
     '/orders',
     '/admin',
+    '/admin/reports',
+    '/admin/permissions',
+    '/admin/roles',
+    '/admin/user-permissions',
     '/css/app.css',
     '/css/japanese-effects.css',
     '/js/app.js',
     '/js/bootstrap.js',
     '/js/japanese-interactions.js',
     '/js/performance-optimizations.js',
+    '/js/permission-management.js',
+    '/js/role-management.js',
+    '/js/user-permission-management.js',
+    '/js/report-management.js',
     '/fonts/NotoSansJP-Regular.woff2',
     '/fonts/NotoSerifJP-Regular.woff2',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',

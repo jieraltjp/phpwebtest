@@ -1,0 +1,124 @@
+# 万方商事 B2B 采购门户 PHPStan 配置
+# 高级别静态分析
+
+parameters:
+    # 分析级别
+    level: 8
+    
+    # 分析路径
+    paths:
+        - app
+        - config
+        - database/factories
+        - database/seeders
+        - routes
+    
+    # 排除路径
+    excludePaths:
+        - app/Console/Kernel.php
+        - app/Exceptions/Handler.php
+        - app/Http/Kernel.php
+        - bootstrap
+        - storage
+        - vendor
+        - node_modules
+        - public/index.php
+        - public/hot
+        - public/storage
+    
+    # 严格规则
+    strictRules:
+        allRules: false
+        booleansInConditions: true
+        uselessCast: true
+        requireParentConstructorCall: true
+        disallowedLooseComparison: true
+        noVariableVariables: false
+        closureUsesThis: true
+        matchingInheritedMethodNames: true
+        numericOperandsInArithmeticOperators: true
+        strictCalls: true
+        switchConditionsMatchingType: true
+        noImplicitWildcard: true
+    
+    # 类型检查
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    
+    # 死代码检测
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+    
+    # 内存限制
+    memoryLimitFile: 2G
+    
+    # 并行处理
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 32
+        minimumNumberOfJobsPerProcess: 2
+    
+    # 缓存
+    tmpDir: storage/phpstan
+    resultCachePath: storage/phpstan/result-cache.php
+    
+    # 自定义规则
+    customRulesetUsed: true
+    
+    # 忽略错误模式
+    ignoreErrors:
+        # Laravel 框架相关忽略
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
+        - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model#'
+        - '#Call to an undefined method Illuminate\\Http\\Request#'
+        - '#Call to an undefined method Illuminate\\Contracts\\View\\View#'
+        
+        # 动态方法调用
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\)#'
+        
+        # 测试相关
+        - '#Call to an undefined method Tests\\[a-zA-Z0-9\\_]+#'
+        
+        # 第三方包
+        - '#Call to an undefined method Tymon\\JWTAuth#'
+        - '#Call to an undefined method Carbon\\Carbon#'
+    
+    # 服务
+    services:
+        -
+            class: PHPStan\Rules\DeadCode\UnusedPrivatePropertyRule
+            tags:
+                - phpstan.rules.rule
+        
+        -
+            class: PHPStan\Rules\DeadCode\UnusedPrivateMethodRule
+            tags:
+                - phpstan.rules.rule
+        
+        -
+            class: PHPStan\Rules\Classes\RequireImplementsRule
+            tags:
+                - phpstan.rules.rule
+        
+        # 自定义服务
+        -
+            class: App\PHPStan\Rules\NoDirectDatabaseCallRule
+            tags:
+                - phpstan.rules.rule
+        
+        -
+            class: App\PHPStan\Rules\ValidateRouteParameterRule
+            tags:
+                - phpstan.rules.rule
+
+# 扩展配置
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+# 自定义规则
+rules:
+    - PHPStan\Rules\Classes\RequireImplementsRule
+    - PHPStan\Rules\DeadCode\UnusedPrivatePropertyRule
+    - PHPStan\Rules\DeadCode\UnusedPrivateMethodRule

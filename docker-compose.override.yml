@@ -1,0 +1,169 @@
+# 万方商事 B2B 采购门户 Docker Compose 开发环境覆盖配置
+# 仅在本地开发环境中使用
+
+version: '3.8'
+
+services:
+  # ================================
+  # 开发环境应用服务
+  # ================================
+  app:
+    build:
+      target: development
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - LOG_LEVEL=debug
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    ports:
+      - "8000:8000"
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # ================================
+  # 开发工具 - Mailpit
+  # ================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: banho-b2b-mailpit
+    restart: unless-stopped
+    
+    ports:
+      - "${MAILPIT_PORT:-1025}:1025"
+      - "${MAILPIT_WEB_PORT:-8025}:8025"
+    
+    environment:
+      - MP_SMTP_AUTH_ALLOW_INSECURE=true
+      - MP_MAX_MESSAGES=1000
+    
+    networks:
+      - banho-network
+
+  # ================================
+  # 开发工具 - Redis Commander
+  # ================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: banho-b2b-redis-commander
+    restart: unless-stopped
+    
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD}
+    
+    networks:
+      - banho-network
+    
+    depends_on:
+      - redis
+
+  # ================================
+  # 开发工具 - Adminer
+  # ================================
+  adminer:
+    image: adminer:latest
+    container_name: banho-b2b-adminer
+    restart: unless-stopped
+    
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    
+    environment:
+      - ADMINER_DEFAULT_SERVER=mysql
+      - ADMINER_DESIGN=pepa-linha
+    
+    networks:
+      - banho-network
+    
+    depends_on:
+      - mysql
+
+  # ================================
+  # 开发工具 - Xdebug
+  # ================================
+  xdebug:
+    build:
+      context: .
+      dockerfile: Dockerfile.xdebug
+    container_name: banho-b2b-xdebug
+    restart: unless-stopped
+    
+    environment:
+      - PHP_IDE_CONFIG=serverName=banho-b2b
+      - XDEBUG_MODE=debug,coverage
+      - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+    
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    
+    ports:
+      - "9003:9003"
+    
+    networks:
+      - banho-network
+    
+    depends_on:
+      - mysql
+      - redis
+    
+    command: php artisan serve --host=0.0.0.0 --port=9000
+
+  # ================================
+  # 开发工具 - Node.js 热重载
+  # ================================
+  node:
+    image: node:20-alpine
+    container_name: banho-b2b-node
+    restart: unless-stopped
+    
+    working_dir: /app
+    
+    volumes:
+      - .:/app
+      - /app/node_modules
+    
+    ports:
+      - "5173:5173"
+    
+    environment:
+      - NODE_ENV=development
+    
+    networks:
+      - banho-network
+    
+    command: npm run dev
+
+  # ================================
+  # 测试数据库
+  # ================================
+  mysql-test:
+    image: mysql:8.0
+    container_name: banho-b2b-mysql-test
+    restart: unless-stopped
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: test_password
+      MYSQL_DATABASE: banho_b2b_test
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+    
+    ports:
+      - "3307:3306"
+    
+    networks:
+      - banho-network
+    
+    profiles:
+      - testing
+
+volumes:
+  mysql_test_data:
+    driver: local
