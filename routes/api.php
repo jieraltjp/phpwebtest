@@ -176,3 +176,70 @@ Route::prefix('events')->middleware(['jwt.auth', 'throttle:admin'])->group(funct
     Route::get('/export', [App\Http\Controllers\EventController::class, 'export']);
     Route::post('/reset', [App\Http\Controllers\EventController::class, 'reset']);
 });
+
+// WebSocket API 路由
+Route::prefix('websocket')->middleware(['jwt.auth'])->group(function () {
+    Route::get('/config', [App\Http\Controllers\Api\WebSocketController::class, 'getConfig']);
+    Route::post('/auth', [App\Http\Controllers\Api\WebSocketController::class, 'authenticate'])->withoutMiddleware('jwt.auth');
+    Route::post('/system-message', [App\Http\Controllers\Api\WebSocketController::class, 'sendSystemMessage'])->middleware('throttle:admin');
+    Route::post('/maintenance-notification', [App\Http\Controllers\Api\WebSocketController::class, 'sendMaintenanceNotification'])->middleware('throttle:admin');
+    Route::post('/chat-message', [App\Http\Controllers\Api\WebSocketController::class, 'sendChatMessage']);
+    Route::get('/stats', [App\Http\Controllers\Api\WebSocketController::class, 'getStats'])->middleware('throttle:admin');
+    Route::post('/disconnect', [App\Http\Controllers\Api\WebSocketController::class, 'disconnectConnection'])->middleware('throttle:admin');
+    Route::post('/broadcast-test', [App\Http\Controllers\Api\WebSocketController::class, 'broadcastTest'])->middleware('throttle:admin');
+    Route::get('/online-users', [App\Http\Controllers\Api\WebSocketController::class, 'getOnlineUsers']);
+    Route::post('/cleanup', [App\Http\Controllers\Api\WebSocketController::class, 'cleanupConnections'])->middleware('throttle:admin');
+    Route::get('/message-history', [App\Http\Controllers\Api\WebSocketController::class, 'getMessageHistory']);
+});
+
+// 实时通信 API 路由
+Route::prefix('realtime')->middleware(['jwt.auth'])->group(function () {
+    Route::get('/notifications', [App\Http\Controllers\Api\RealtimeController::class, 'getNotifications']);
+    Route::post('/notifications/read', [App\Http\Controllers\Api\RealtimeController::class, 'markNotificationsAsRead']);
+    Route::delete('/notifications', [App\Http\Controllers\Api\RealtimeController::class, 'clearNotifications']);
+    Route::get('/chat/history', [App\Http\Controllers\Api\RealtimeController::class, 'getChatHistory']);
+    Route::post('/chat/read', [App\Http\Controllers\Api\RealtimeController::class, 'markChatAsRead']);
+    Route::get('/stats', [App\Http\Controllers\Api\RealtimeController::class, 'getRealtimeStats']);
+});
+
+// 高级分析 API 路由
+Route::prefix('analytics')->middleware(['jwt.auth', 'throttle:60,1'])->group(function () {
+    
+    // 业务分析
+    Route::get('/sales-trends', [App\Http\Controllers\Api\AnalyticsController::class, 'salesTrends']);
+    Route::get('/customer-value', [App\Http\Controllers\Api\AnalyticsController::class, 'customerValue']);
+    Route::get('/inventory-optimization', [App\Http\Controllers\Api\AnalyticsController::class, 'inventoryOptimization']);
+    Route::get('/financials', [App\Http\Controllers\Api\AnalyticsController::class, 'financials']);
+    Route::get('/product-performance', [App\Http\Controllers\Api\AnalyticsController::class, 'productPerformance']);
+    Route::get('/market-analysis', [App\Http\Controllers\Api\AnalyticsController::class, 'marketAnalysis']);
+    
+    // 报表系统
+    Route::post('/reports/generate', [App\Http\Controllers\Api\AnalyticsController::class, 'generateReport']);
+    Route::get('/reports/templates', [App\Http\Controllers\Api\AnalyticsController::class, 'reportTemplates']);
+    Route::post('/reports/export', [App\Http\Controllers\Api\AnalyticsController::class, 'exportReport']);
+    
+    // 可视化仪表板
+    Route::get('/dashboards/executive', [App\Http\Controllers\Api\AnalyticsController::class, 'executiveDashboard']);
+    Route::get('/dashboards/sales', [App\Http\Controllers\Api\AnalyticsController::class, 'salesDashboard']);
+    Route::get('/dashboards/customer', [App\Http\Controllers\Api\AnalyticsController::class, 'customerDashboard']);
+    Route::get('/dashboards/inventory', [App\Http\Controllers\Api\AnalyticsController::class, 'inventoryDashboard']);
+    Route::get('/realtime-stream', [App\Http\Controllers\Api\AnalyticsController::class, 'realTimeStream']);
+    Route::post('/charts/interactive', [App\Http\Controllers\Api\AnalyticsController::class, 'interactiveChart']);
+    Route::post('/charts/heatmap', [App\Http\Controllers\Api\AnalyticsController::class, 'heatmap']);
+    Route::post('/charts/funnel', [App\Http\Controllers\Api\AnalyticsController::class, 'funnelChart']);
+    Route::post('/charts/geo-map', [App\Http\Controllers\Api\AnalyticsController::class, 'geoMap']);
+    
+    // 预测分析
+    Route::post('/forecast/time-series', [App\Http\Controllers\Api\AnalyticsController::class, 'timeSeriesForecast']);
+    Route::post('/forecast/sales', [App\Http\Controllers\Api\AnalyticsController::class, 'salesForecast']);
+    Route::post('/predict/churn', [App\Http\Controllers\Api\AnalyticsController::class, 'churnPrediction']);
+    Route::post('/forecast/inventory-demand', [App\Http\Controllers\Api\AnalyticsController::class, 'inventoryDemandForecast']);
+    Route::post('/predict/market-trends', [App\Http\Controllers\Api\AnalyticsController::class, 'marketTrendPrediction']);
+    Route::post('/predict/price-elasticity', [App\Http\Controllers\Api\AnalyticsController::class, 'priceElasticityPrediction']);
+    
+    // ETL 和数据管理
+    Route::post('/etl/run', [App\Http\Controllers\Api\AnalyticsController::class, 'runETL'])->middleware('throttle:admin');
+    Route::get('/etl/status', [App\Http\Controllers\Api\AnalyticsController::class, 'etlStatus']);
+    Route::get('/overview', [App\Http\Controllers\Api\AnalyticsController::class, 'analyticsOverview']);
+    Route::get('/system-health', [App\Http\Controllers\Api\AnalyticsController::class, 'systemHealth']);
+});

@@ -48,6 +48,16 @@ Route::get('/register', [AuthController::class, 'showRegisterPage']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
+
+// 高级分析中心
+Route::get('/analytics', function () {
+    return view('analytics');
+})->middleware('auth');
+
+// 实时通信门户
+Route::get('/realtime', function () {
+    return view('realtime-portal');
+})->middleware('auth');
 Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
 Route::get('/products', function() {
     return view('products');

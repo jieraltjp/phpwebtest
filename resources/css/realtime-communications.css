@@ -1,0 +1,894 @@
+/**
+ * 实时通信系统样式
+ * 
+ * 包含WebSocket客户端、通知系统、聊天界面等样式
+ * 采用现代化设计，支持响应式布局
+ */
+
+/* ==========================================================================
+   实时通知容器
+   ========================================================================== */
+
+.realtime-notifications {
+    position: fixed;
+    z-index: 9999;
+    max-width: 400px;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    pointer-events: none;
+}
+
+/* 位置变体 */
+.realtime-notifications--top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.realtime-notifications--top-left {
+    top: 20px;
+    left: 20px;
+}
+
+.realtime-notifications--bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+
+.realtime-notifications--bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+.realtime-notifications--top-center {
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.realtime-notifications--bottom-center {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 通知头部 */
+.realtime-notifications__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px 8px 0 0;
+    pointer-events: auto;
+}
+
+.realtime-notifications__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.realtime-notifications__controls {
+    display: flex;
+    gap: 8px;
+}
+
+.realtime-notifications__controls button {
+    background: none;
+    border: none;
+    color: #7f8c8d;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.realtime-notifications__controls button:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
+}
+
+/* 通知列表 */
+.realtime-notifications__list {
+    pointer-events: auto;
+}
+
+/* 空状态 */
+.realtime-notifications__empty {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    color: #7f8c8d;
+    pointer-events: auto;
+}
+
+.realtime-notifications__empty i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.realtime-notifications__empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 单个通知 */
+.realtime-notification {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.realtime-notification--show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.realtime-notification--hide {
+    opacity: 0;
+    transform: translateX(100%);
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 0;
+}
+
+.realtime-notification--read {
+    opacity: 0.7;
+}
+
+.realtime-notification:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 通知类型变体 */
+.realtime-notification--info {
+    border-left: 4px solid #3498db;
+}
+
+.realtime-notification--success {
+    border-left: 4px solid #27ae60;
+}
+
+.realtime-notification--warning {
+    border-left: 4px solid #f39c12;
+}
+
+.realtime-notification--error {
+    border-left: 4px solid #e74c3c;
+}
+
+.realtime-notification--maintenance {
+    border-left: 4px solid #9b59b6;
+}
+
+.realtime-notification--chat {
+    border-left: 4px solid #00bcd4;
+}
+
+.realtime-notification--order {
+    border-left: 4px solid #ff9800;
+}
+
+.realtime-notification--inventory {
+    border-left: 4px solid #795548;
+}
+
+/* 通知内容 */
+.realtime-notification__content {
+    padding: 16px;
+}
+
+.realtime-notification__header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.realtime-notification__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.realtime-notification--info .realtime-notification__icon {
+    color: #3498db;
+}
+
+.realtime-notification--success .realtime-notification__icon {
+    color: #27ae60;
+}
+
+.realtime-notification--warning .realtime-notification__icon {
+    color: #f39c12;
+}
+
+.realtime-notification--error .realtime-notification__icon {
+    color: #e74c3c;
+}
+
+.realtime-notification__title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.realtime-notification__dismiss {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #bdc3c7;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.realtime-notification__dismiss:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #7f8c8d;
+}
+
+.realtime-notification__message {
+    font-size: 13px;
+    color: #34495e;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+/* 通知操作按钮 */
+.realtime-notification__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.realtime-notification__action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.realtime-notification__action:hover {
+    background: #bdc3c7;
+    transform: translateY(-1px);
+}
+
+.realtime-notification__action.primary {
+    background: #3498db;
+    color: white;
+}
+
+.realtime-notification__action.primary:hover {
+    background: #2980b9;
+}
+
+/* 进度条 */
+.realtime-notification__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.realtime-notification__progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    animation: progress-bar linear;
+    transform-origin: left;
+}
+
+@keyframes progress-bar {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* 时间戳 */
+.realtime-notification__timestamp {
+    padding: 8px 16px;
+    font-size: 11px;
+    color: #95a5a6;
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 未读徽章 */
+.realtime-notifications__badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    animation: badge-pulse 2s infinite;
+}
+
+@keyframes badge-pulse {
+    0% {
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+    50% {
+        box-shadow: 0 2px 16px rgba(231, 76, 60, 0.6);
+    }
+    100% {
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+}
+
+/* 设置面板 */
+.realtime-notifications__settings-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    min-width: 300px;
+    max-width: 90vw;
+}
+
+.settings-panel__content {
+    padding: 24px;
+}
+
+.settings-panel__content h4 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.settings-panel__option {
+    margin-bottom: 16px;
+}
+
+.settings-panel__option label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #34495e;
+    cursor: pointer;
+}
+
+.settings-panel__option input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.settings-panel__option select {
+    padding: 6px 8px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+.settings-panel__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.btn-secondary {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.btn-secondary:hover {
+    background: #bdc3c7;
+}
+
+/* ==========================================================================
+   WebSocket连接状态指示器
+   ========================================================================== */
+
+.websocket-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #7f8c8d;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.websocket-status--connected {
+    color: #27ae60;
+}
+
+.websocket-status--connecting {
+    color: #f39c12;
+}
+
+.websocket-status--disconnected {
+    color: #e74c3c;
+}
+
+.websocket-status__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: status-pulse 2s infinite;
+}
+
+.websocket-status--connected .websocket-status__indicator {
+    background: #27ae60;
+}
+
+.websocket-status--connecting .websocket-status__indicator {
+    background: #f39c12;
+}
+
+.websocket-status--disconnected .websocket-status__indicator {
+    background: #e74c3c;
+    animation: none;
+}
+
+@keyframes status-pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   聊天界面
+   ========================================================================== */
+
+.chat-window {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 350px;
+    height: 450px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 9998;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.chat-window--open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.chat-window__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #3498db;
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.chat-window__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.chat-window__controls {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-window__control {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+    font-size: 14px;
+}
+
+.chat-window__control:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.chat-window__messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.chat-message {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message--sent {
+    align-items: flex-end;
+}
+
+.chat-message--received {
+    align-items: flex-start;
+}
+
+.chat-message__bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.chat-message--sent .chat-message__bubble {
+    background: #3498db;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message--received .chat-message__bubble {
+    background: white;
+    color: #2c3e50;
+    border: 1px solid #ecf0f1;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-message__time {
+    font-size: 11px;
+    color: #95a5a6;
+    margin-top: 4px;
+    padding: 0 4px;
+}
+
+.chat-window__input {
+    padding: 16px;
+    border-top: 1px solid #ecf0f1;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-window__input input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #bdc3c7;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.chat-window__input input:focus {
+    border-color: #3498db;
+}
+
+.chat-window__input button {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.chat-window__input button:hover {
+    background: #2980b9;
+}
+
+.chat-window__input button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+/* 聊天按钮 */
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+    transition: all 0.3s ease;
+    z-index: 9997;
+}
+
+.chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(52, 152, 219, 0.4);
+}
+
+.chat-button--has-unread {
+    animation: chat-button-pulse 2s infinite;
+}
+
+@keyframes chat-button-pulse {
+    0% {
+        box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 30px rgba(52, 152, 219, 0.6);
+    }
+    100% {
+        box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+    }
+}
+
+/* ==========================================================================
+   响应式设计
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .realtime-notifications {
+        left: 10px !important;
+        right: 10px !important;
+        top: 10px !important;
+        bottom: 10px !important;
+        max-width: none;
+        transform: none !important;
+    }
+
+    .realtime-notification {
+        margin-bottom: 6px;
+    }
+
+    .realtime-notification__content {
+        padding: 12px;
+    }
+
+    .chat-window {
+        width: calc(100vw - 40px);
+        height: calc(100vh - 120px);
+        bottom: 70px;
+        right: 20px;
+        left: 20px;
+    }
+
+    .websocket-status {
+        bottom: 80px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .chat-button {
+        bottom: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .realtime-notification__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .realtime-notification__dismiss {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+    }
+
+    .realtime-notification__actions {
+        flex-direction: column;
+    }
+
+    .chat-window__messages {
+        padding: 12px;
+    }
+
+    .chat-message__bubble {
+        max-width: 90%;
+    }
+}
+
+/* ==========================================================================
+   暗色主题支持
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .realtime-notification {
+        background: rgba(44, 62, 80, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .realtime-notification__title {
+        color: #ecf0f1;
+    }
+
+    .realtime-notification__message {
+        color: #bdc3c7;
+    }
+
+    .realtime-notifications__header {
+        background: rgba(44, 62, 80, 0.95);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .realtime-notifications__title {
+        color: #ecf0f1;
+    }
+
+    .websocket-status {
+        background: rgba(44, 62, 80, 0.95);
+        color: #bdc3c7;
+    }
+
+    .chat-window {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    .chat-window__messages {
+        background: #34495e;
+    }
+
+    .chat-message--received .chat-message__bubble {
+        background: #34495e;
+        color: #ecf0f1;
+        border-color: #4a5f7a;
+    }
+
+    .chat-window__input input {
+        background: #34495e;
+        border-color: #4a5f7a;
+        color: #ecf0f1;
+    }
+
+    .chat-window__input input:focus {
+        border-color: #3498db;
+    }
+}
+
+/* ==========================================================================
+   动画和过渡效果
+   ========================================================================== */
+
+.realtime-notification {
+    animation: notification-slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes notification-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.realtime-notification--hide {
+    animation: notification-slide-out 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes notification-slide-out {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* 滚动条样式 */
+.chat-window__messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-window__messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-window__messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.chat-window__messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,429 @@
+name: 万方商事 B2B 采购门户 CI/CD 流水线
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [ published ]
+
+env:
+  PHP_VERSION: '8.2'
+  NODE_VERSION: '20'
+  MYSQL_VERSION: '8.0'
+  REDIS_VERSION: '7'
+
+jobs:
+  # 代码质量检查
+  code-quality:
+    name: 代码质量检查
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 设置 PHP 环境
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, redis
+        coverage: xdebug
+
+    - name: 获取 Composer 缓存目录
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: 缓存 Composer 依赖
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: 安装 Composer 依赖
+      run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+    - name: 设置 Node.js 环境
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 安装 NPM 依赖
+      run: npm ci
+
+    - name: PHP 代码风格检查 (Laravel Pint)
+      run: vendor/bin/pint --test
+
+    - name: PHP 静态分析 (PHPStan)
+      run: |
+        composer require --dev phpstan/phpstan
+        vendor/bin/phpstan analyse --memory-limit=2G
+
+    - name: PHP 类型检查 (Psalm)
+      run: |
+        composer require --dev vimeo/psalm
+        vendor/bin/psalm --show-info=false
+
+    - name: 安全漏洞扫描
+      run: composer audit
+
+    - name: JavaScript 代码检查
+      run: npm run lint
+
+    - name: 前端代码格式化检查
+      run: npm run format --check
+
+  # 单元测试和集成测试
+  test:
+    name: 测试套件
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    services:
+      mysql:
+        image: mysql:${{ env.MYSQL_VERSION }}
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: banho_b2b_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      redis:
+        image: redis:${{ env.REDIS_VERSION }}
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 设置 PHP 环境
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, redis, mysql, pdo_mysql
+        coverage: xdebug
+
+    - name: 获取 Composer 缓存目录
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: 缓存 Composer 依赖
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: 安装 Composer 依赖
+      run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+
+    - name: 设置 Node.js 环境
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 安装 NPM 依赖
+      run: npm ci
+
+    - name: 复制环境配置文件
+      run: cp .env.example .env
+
+    - name: 生成应用密钥
+      run: php artisan key:generate
+
+    - name: 配置测试数据库
+      run: |
+        php artisan config:cache
+        php artisan config:set database.default mysql
+        php artisan config:set database.connections.mysql.host 127.0.0.1
+        php artisan config:set database.connections.mysql.port 3306
+        php artisan config:set database.connections.mysql.database banho_b2b_test
+        php artisan config:set database.connections.mysql.username root
+        php artisan config:set database.connections.mysql.password password
+
+    - name: 运行数据库迁移
+      run: php artisan migrate --force
+
+    - name: 填充测试数据
+      run: php artisan db:seed --class=DatabaseSeeder
+
+    - name: 构建前端资源
+      run: npm run build
+
+    - name: 运行 PHPUnit 测试
+      run: |
+        vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=test-results.xml
+
+    - name: 运行前端测试
+      run: npm run test
+
+    - name: 上传测试覆盖率报告
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: 上传测试结果
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: test-results.xml
+
+  # 构建和部署
+  build-and-deploy:
+    name: 构建和部署
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    
+    strategy:
+      matrix:
+        environment: [staging, production]
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 设置 Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 登录 Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: 生成环境变量文件
+      run: |
+        cat > .env.${{ matrix.environment }} << EOF
+        APP_NAME="万方商事 B2B 采购门户"
+        APP_ENV=${{ matrix.environment }}
+        APP_KEY=${{ secrets.APP_KEY }}
+        APP_DEBUG=false
+        APP_URL=${{ secrets.APP_URL_${{ matrix.environment }} }}
+        
+        LOG_CHANNEL=stack
+        LOG_DEPRECATIONS_CHANNEL=null
+        LOG_LEVEL=debug
+        
+        DB_CONNECTION=mysql
+        DB_HOST=${{ secrets.DB_HOST_${{ matrix.environment }} }}
+        DB_PORT=3306
+        DB_DATABASE=${{ secrets.DB_DATABASE_${{ matrix.environment }} }}
+        DB_USERNAME=${{ secrets.DB_USERNAME_${{ matrix.environment }} }}
+        DB_PASSWORD=${{ secrets.DB_PASSWORD_${{ matrix.environment }} }}
+        
+        BROADCAST_DRIVER=log
+        CACHE_DRIVER=redis
+        FILESYSTEM_DISK=local
+        QUEUE_CONNECTION=redis
+        SESSION_DRIVER=redis
+        SESSION_LIFETIME=120
+        
+        MEMCACHED_HOST=127.0.0.1
+        
+        REDIS_HOST=${{ secrets.REDIS_HOST_${{ matrix.environment }} }}
+        REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD_${{ matrix.environment }} }}
+        REDIS_PORT=6379
+        
+        MAIL_MAILER=smtp
+        MAIL_HOST=mailpit
+        MAIL_PORT=1025
+        MAIL_USERNAME=null
+        MAIL_PASSWORD=null
+        MAIL_ENCRYPTION=null
+        MAIL_FROM_ADDRESS="hello@example.com"
+        MAIL_FROM_NAME="\${APP_NAME}"
+        
+        AWS_ACCESS_KEY_ID=
+        AWS_SECRET_ACCESS_KEY=
+        AWS_DEFAULT_REGION=us-east-1
+        AWS_BUCKET=
+        AWS_USE_PATH_STYLE_ENDPOINT=false
+        
+        VITE_APP_NAME="${APP_NAME}"
+        
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        JWT_TTL=60
+        JWT_REFRESH_TTL=20160
+        JWT_ALGORITHM=HS256
+        EOF
+
+    - name: 构建 Docker 镜像
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: |
+          banho/b2b-portal:latest
+          banho/b2b-portal:${{ github.sha }}
+          banho/b2b-portal:${{ matrix.environment }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          APP_ENV=${{ matrix.environment }}
+
+    - name: 部署到 ${{ matrix.environment }}
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST_${{ matrix.environment }} }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /var/www/banho-b2b-portal
+          
+          # 备份当前版本
+          docker-compose down
+          docker tag banho/b2b-portal:latest banho/b2b-portal:backup-$(date +%Y%m%d-%H%M%S)
+          
+          # 拉取新镜像
+          docker pull banho/b2b-portal:${{ matrix.environment }}
+          docker tag banho/b2b-portal:${{ matrix.environment }} banho/b2b-portal:latest
+          
+          # 启动新版本
+          docker-compose up -d
+          
+          # 等待服务启动
+          sleep 30
+          
+          # 健康检查
+          curl -f http://localhost/api/health || exit 1
+          
+          # 清理旧镜像
+          docker image prune -f
+
+    - name: 部署后通知
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        text: |
+          🚀 万方商事 B2B 采购门户部署完成
+          📦 环境: ${{ matrix.environment }}
+          🔗 版本: ${{ github.sha }}
+          ✅ 状态: ${{ job.status }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # 性能测试
+  performance-test:
+    name: 性能测试
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 运行 Artillery 性能测试
+      run: |
+        npm install -g artillery
+        artillery run tests/performance/load-test.yml --target ${{ secrets.STAGING_URL }}
+
+    - name: 上传性能测试报告
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-report
+        path: artillery-report.html
+
+  # 安全扫描
+  security-scan:
+    name: 安全扫描
+    runs-on: ubuntu-latest
+    needs: code-quality
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 运行 Trivy 漏洞扫描
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: 上传 Trivy 扫描结果
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: 运行 Semgrep 安全扫描
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: >-
+          p/security-audit
+          p/secrets
+          p/laravel
+          p/php
+          p/javascript
+
+  # 依赖更新检查
+  dependency-update:
+    name: 依赖更新检查
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 设置 PHP 环境
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+
+    - name: 检查 Composer 依赖更新
+      run: |
+        composer update --dry-run --no-interaction
+        composer outdated --direct
+
+    - name: 设置 Node.js 环境
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 检查 NPM 依赖更新
+      run: |
+        npm outdated || true
+
+    - name: 创建 Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore: 更新依赖包'
+        title: '依赖包更新'
+        body: |
+          ## 依赖包更新
+          
+          此 PR 包含了自动检查到的依赖包更新。
+          
+          ### PHP 依赖
+          - 运行 `composer outdated` 查看具体更新
+          
+          ### Node.js 依赖
+          - 运行 `npm outdated` 查看具体更新
+          
+          请仔细测试所有功能后再合并。
+        branch: dependency-updates
+        delete-branch: true
