@@ -13,11 +13,17 @@ class ValidationService
     protected static $rules = [
         'user' => [
             'name' => 'required|string|max:255',
+            'username' => 'required|string|min:3|max:50|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/',
+            'password_confirmation' => 'required|string|same:password',
             'phone' => 'nullable|string|regex:/^[\+]?[1-9][\d]{0,15}$/',
             'company' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:1000',
+        ],
+        'login' => [
+            'username' => 'required|string|min:3|max:50',
+            'password' => 'required|string|min:6',
         ],
         'product' => [
             'name' => 'required|string|max:255',
@@ -105,6 +111,8 @@ class ValidationService
         'notes' => '备注',
         'contact_person' => '联系人',
         'message' => '留言',
+        'username' => '用户名',
+        'password_confirmation' => '确认密码',
     ];
 
     /**
@@ -125,13 +133,33 @@ class ValidationService
                 ];
             }
             
+            // 更新时用户名唯一性排除当前用户
+            if ($userId && isset($rules['username'])) {
+                $rules['username'] = [
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:50',
+                    Rule::unique('users', 'username')->ignore($userId)
+                ];
+            }
+            
             // 更新时密码不是必填的
             if (!isset($data['password'])) {
                 unset($rules['password']);
+                unset($rules['password_confirmation']);
             }
         }
 
         return self::validate($data, $rules);
+    }
+
+    /**
+     * 验证登录数据
+     */
+    public static function validateLogin(array $data)
+    {
+        return self::validate($data, self::$rules['login']);
     }
 
     /**

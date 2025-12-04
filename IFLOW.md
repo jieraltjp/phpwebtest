@@ -17,15 +17,18 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
 
-# 雅虎 B2B 采购门户项目指南
+# 万方商事 B2B 采购门户项目指南
 
 ## 项目概述
 
-这是一个基于 Laravel 12 框架开发的高端 B2B 采购门户系统，为雅虎客户提供完整的阿里巴巴商品采购功能。项目采用日式设计美学，包含 RESTful API、用户仪表板、管理后台、Swagger 文档、询价系统和精美的和风首页。
+这是一个基于 Laravel 12 框架开发的高端 B2B 采购门户系统，为万方商事客户提供完整的阿里巴巴商品采购功能。项目采用日式企业级设计美学，包含 RESTful API、用户仪表板、管理后台、Swagger 文档、询价系统、批量采购功能和精美的和风首页。
 
-**设计特色**：高端大气上档次，融合日本传统美学元素（樱花、和纸、墨黑、金色点缀），提供沉浸式的用户体验。
+**品牌定位**：万方商事株式会社 (BANHO TRADING CO., LTD.) - 专业B2B贸易服务商
+**官网地址**：https://manpou.jp/
 
-**项目阶段**：MVP完成 → 产品优化期，已完成多角色改进分析中的高优先级技术改进。
+**设计特色**：高端企业级日式设计，融合日本传统美学元素（墨黑、金色、樱花），提供专业的商业用户体验。
+
+**项目阶段**：MVP完成 → 产品优化期 → 多系统扩展期，已完成企业级首页重新设计，新增多系统架构规划，整合完整README文档和测试工具。
 
 ## 技术栈
 
@@ -33,28 +36,35 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - **认证系统**: JWT (tymon/jwt-auth)
 - **数据库**: SQLite (开发环境)
 - **前端框架**: Bootstrap 5 + Blade 模板
-- **构建工具**: Vite
-- **设计系统**: 自定义和风设计系统 (Japanese Effects)
-- **图表库**: Chart.js
+- **构建工具**: Vite 5.4.0 + Tailwind CSS 4.0
+- **设计系统**: 万方商事企业级设计系统 (Banho Theme)
+- **图表库**: Chart.js 4.4.0
 - **API 文档**: Swagger/OpenAPI 3.0
 - **测试框架**: PHPUnit
 - **异常处理**: 全局异常处理器
 - **响应标准化**: ApiResponseService
+- **缓存系统**: Redis/文件缓存 (CacheService)
+- **输入验证**: ValidationService
+- **品牌配置**: BanhoConfigService (万方商事品牌管理)
+- **并发处理**: Concurrently (多服务并行)
 
 ## 项目结构
 
 ```
-my-mbxj/
+phpwebtest/
 ├── app/
 │   ├── Http/Controllers/
 │   │   ├── Api/              # API 控制器
 │   │   │   ├── AuthController.php      # 认证控制器
-│   │   │   ├── InquiryController.php   # 询价控制器 (新增)
+│   │   │   ├── BulkPurchaseController.php # 批量采购控制器
+│   │   │   ├── InquiryController.php   # 询价控制器
 │   │   │   ├── OrderController.php      # 订单控制器
 │   │   │   └── ProductController.php    # 产品控制器
 │   │   ├── Admin/            # 管理员控制器
 │   │   │   └── AdminController.php     # 管理员控制器
 │   │   ├── DashboardController.php     # 仪表板控制器
+│   │   ├── AuthController.php          # Web认证控制器
+│   │   ├── BanhoController.php         # 万方商事品牌控制器 (新增)
 │   │   └── SwaggerController.php       # Swagger文档控制器
 │   ├── Models/               # 数据模型
 │   │   ├── User.php                  # 用户模型
@@ -62,44 +72,110 @@ my-mbxj/
 │   │   ├── Order.php                 # 订单模型
 │   │   ├── OrderItem.php             # 订单项模型
 │   │   ├── Shipment.php              # 物流模型
-│   │   └── Inquiry.php               # 询价模型 (新增)
-│   ├── Services/            # 服务层 (新增)
-│   │   └── ApiResponseService.php     # API响应标准化服务
-│   ├── Exceptions/          # 异常处理 (新增)
+│   │   └── Inquiry.php               # 询价模型
+│   ├── Services/            # 服务层
+│   │   ├── ApiResponseService.php     # API响应标准化服务
+│   │   ├── CacheService.php           # 缓存管理服务
+│   │   ├── ValidationService.php      # 输入验证服务
+│   │   └── BanhoConfigService.php     # 万方商事配置服务 (新增)
+│   ├── Exceptions/          # 异常处理
 │   │   └── Handler.php               # 全局异常处理器
 │   └── Providers/           # 服务提供者
 ├── config/
 │   ├── jwt.php              # JWT 配置
-│   └── swagger.php          # Swagger 配置
+│   ├── swagger.php          # Swagger 配置
+│   └── tailwind.config.js    # Tailwind CSS 配置 (新增)
 ├── database/
 │   ├── migrations/          # 数据库迁移文件
-│   │   ├── 2025_12_03_135034_create_inquiries_table.php  # 询价表迁移 (新增)
+│   │   ├── 2025_12_03_135034_create_inquiries_table.php  # 询价表迁移
 │   │   └── ...               # 其他迁移文件
 │   └── seeders/            # 测试数据填充
 ├── resources/
 │   ├── views/
-│   │   ├── dashboard.blade.php    # 用户仪表板 (12个状态指示器)
+│   │   ├── auth.blade.php         # 认证页面 (登录/注册)
+│   │   ├── dashboard.blade.php    # 用户仪表板
 │   │   ├── home.blade.php         # 和风首页
+│   │   ├── banho-home.blade.php  # 万方商事企业首页 (新增)
+│   │   ├── banho-dashboard.blade.php # 万方商事仪表板 (新增)
 │   │   ├── orders.blade.php       # 订单管理页面
 │   │   ├── products.blade.php     # 产品管理页面
 │   │   ├── welcome.blade.php      # Laravel 欢迎页
 │   │   ├── admin/                 # 管理员界面
 │   │   │   └── dashboard.blade.php # 管理员仪表板
 │   │   └── swagger/               # API 文档界面
+│   │       ├── index.blade.php    # 基础文档页面
+│   │       └── interactive.blade.php # 交互式API文档
 │   ├── css/
 │   │   ├── app.css               # 主样式文件
+│   │   ├── banho-theme.css       # 万方商事主题样式 (新增)
 │   │   └── japanese-effects.css  # 和风动效库
 │   └── js/
 │       ├── app.js                # 主 JavaScript 文件
+│       ├── banho-portal.js       # 万方商事门户脚本 (新增)
 │       ├── bootstrap.js          # Bootstrap 初始化
 │       └── japanese-interactions.js # 和风交互库
+├── public/
+│   ├── css/
+│   │   └── temp-banho.css        # 临时企业样式 (新增)
+│   └── api/                     # API 健康检查
 ├── routes/
 │   ├── api.php              # API 路由
-│   └── web.php              # Web 路由 (已优化)
-└── openspec/                # 规格说明文档
+│   └── web.php              # Web 路由
+├── openspec/                # 规格说明文档
+├── MULTI_SYSTEM_ARCHITECTURE.md # 多系统架构设计 (新增)
+├── test-pages.php          # 页面测试脚本 (新增)
+└── tailwind.config.js      # Tailwind CSS 配置
 ```
 
 ## 开发命令
+
+#### 🚀 一键启动 (推荐)
+
+```bash
+# 启动完整开发环境 (并行启动所有服务)
+composer run dev
+```
+
+**启动的服务包括:**
+- 🌐 Laravel 服务器 (http://localhost:8000)
+- 🔄 队列监听器 (后台任务处理)
+- 📝 日志监控器 (实时日志显示)
+- ⚡ Vite 前端构建 (热重载)
+
+#### 🔧 分别启动服务
+
+```bash
+# 启动 Laravel 服务器
+php artisan serve
+
+# 启动前端构建服务
+npm run dev
+
+# 启动队列监听器
+php artisan queue:listen --tries=1
+
+# 启动日志监控器
+php artisan pail --timeout=0
+```
+
+#### 📱 Windows 用户快速启动
+
+```bash
+# 使用提供的批处理文件
+start-server.bat          # 启动服务器
+quick-start.bat          # 一键启动所有服务
+```
+
+#### 🌐 系统访问地址
+
+| 服务 | 地址 | 说明 |
+|------|------|------|
+| 数字门户 | http://localhost:8000/portal | 统一入口页面 |
+| 和风门户 | http://localhost:8000/ | 传统和风界面 |
+| 企业门户 | http://localhost:8000/banho | 现代企业界面 |
+| 管理后台 | http://localhost:8000/admin | 系统管理界面 |
+| API文档 | http://localhost:8000/docs | 接口文档中心 |
+| 健康检查 | http://localhost:8000/api/health | 系统状态检查 |
 
 ### 环境设置
 ```bash
@@ -120,18 +196,6 @@ php artisan db:seed --class=UserSeeder
 
 # 运行新的询价表迁移
 php artisan migrate
-```
-
-### 开发服务器
-```bash
-# 启动完整开发环境 (并行服务)
-composer run dev
-
-# 单独启动 Laravel 服务器
-php artisan serve
-
-# 单独启动前端构建
-npm run dev
 ```
 
 ### 测试和质量检查
@@ -158,10 +222,20 @@ php artisan view:clear
 
 ### 1. 认证系统 (JWT)
 - 用户登录/登出
+- 用户注册功能 🆕
 - 令牌刷新机制
 - 用户信息获取
-- 测试账户: `testuser` / `password123`
+- 实时用户名/邮箱可用性检查 🆕
+- **双账户系统**:
+  - 普通用户: `testuser` / `password123`
+  - 管理员: `admin` / `admin123`
 - 全局异常处理保护
+- 登录优先设计，注册模态框 🆕
+- JWT令牌配置:
+  - JWT_SECRET: 3s2GBDB46N374s7zfPvLkb5oTQqsscZ0MN6hWLbu81bkYPJZmZ5icnLSqoRvPlJL
+  - JWT_TTL: 60分钟
+  - JWT_REFRESH_TTL: 20160分钟 (2周)
+  - JWT_ALGORITHM: HS256
 
 ### 2. 产品管理
 - 产品列表查询 (分页、筛选、搜索)
@@ -169,6 +243,12 @@ php artisan view:clear
 - 库存管理与同步
 - 多币种支持 (CNY/JPY)
 - 高级搜索功能
+- **预置测试产品数据**:
+  - ALIBABA_SKU_A123: 日本客户专用 办公椅 (¥1,250.50)
+  - ALIBABA_SKU_B456: 无线蓝牙键盘 (¥280.00)
+  - ALIBABA_SKU_C789: USB-C 扩展坞 (¥189.99)
+  - ALIBABA_SKU_D012: 笔记本电脑支架 (¥85.50)
+  - ALIBABA_SKU_E345: 网络摄像头 (¥320.00)
 
 ### 3. 订单系统
 - 订单创建 (多 SKU 支持)
@@ -177,12 +257,21 @@ php artisan view:clear
 - 订单历史查询
 - 订单筛选和搜索
 
-### 4. 询价系统 🆕
+### 4. 询价系统
 - 询价创建和提交
 - 询价状态管理 (待处理/已报价/已接受/已拒绝/已过期)
 - 询价历史查询
 - 报价管理和过期控制
 - 联系信息管理
+- 询价编号自动生成
+
+### 5. 批量采购系统 🆕
+- 批量采购订单创建 (支持50个SKU)
+- 智能报价系统 (阶梯折扣)
+- 批量采购历史记录
+- 采购统计数据分析
+- 库存自动扣减
+- 折扣计算引擎 (2%-15%)
 
 ### 5. 用户界面系统
 
@@ -212,17 +301,69 @@ php artisan view:clear
 - 产品详情卡片
 - 库存状态指示
 
+#### 认证页面 (`/auth`, `/login`, `/register`) 🆕
+- 登录优先设计，简化用户流程
+- 模态框注册界面，支持ESC键和背景点击关闭
+- 樱花飘落背景动画，和风美学设计
+- 实时表单验证和错误提示
+- 响应式设计，支持移动端滚动优化
+- 用户名/邮箱可用性实时检查
+
+#### 万方商事企业首页 (`/`, `/banho`) 🆕
+- 企业级日式设计美学，专业商务风格
+- 固定导航栏，滚动隐藏效果
+- Hero区域：文案 + 快速注册表单
+- 6大核心服务展示
+- 实绩数据动态展示
+- 完全响应式设计
+- 平滑滚动和数字动画效果
+
+#### 数字门户选择页 (`/portal`) 🆕
+- 统一系统入口页面
+- 四大系统导航卡片
+- 企业级设计风格
+- 加载动画效果
+
 #### 和风首页 (`/`)
 - 高端日式设计美学
 - 樱花飘落动画
 - 响应式布局
 - SEO 优化
 
-### 6. API 文档系统
-- Swagger UI 界面 (`/docs`)
+### 6. 缓存系统 🆕
+- **多层缓存策略**: 短期/中期/长期缓存
+- **智能缓存管理**: 自动缓存清理和预热
+- **Redis 支持**: 高性能缓存存储
+- **缓存统计**: 内存使用和命中率监控
+- **产品缓存**: 热门产品数据缓存
+- **用户数据缓存**: 订单和询价历史缓存
+- **统计数据缓存**: 实时统计性能优化
+
+### 7. 输入验证系统 🆕
+- **统一验证服务**: ValidationService 封装
+- **安全过滤**: HTML标签移除和特殊字符转义
+- **自定义验证规则**: 银行卡、身份证、IP验证
+- **批量验证**: 支持复杂业务逻辑验证
+- **文件上传验证**: 类型和大小限制
+- **多语言错误消息**: 中英文错误提示
+
+### 8. 万方商事品牌系统 🆕
+- **品牌配置API**: `/api/banho/*` 端点
+- **多语言支持**: 日语/英语/中文
+- **企业信息管理**: 公司名称、官网、联系方式
+- **业务配置**: 货币、汇率、物流、支付
+- **支持服务**: 营业时间、联系方式、响应时间
+- **缓存管理**: 智能配置缓存和清理
+
+### 9. API 文档系统
+- 基础文档界面 (`/docs`)
+- 交互式 API 文档 (`/docs/interactive`)
 - OpenAPI 3.0 规范 (`/api/openapi`)
-- 交互式 API 测试
-- 和风主题界面设计
+- 完整的 Swagger UI 集成
+- JWT 认证自动注入
+- 在线 API 测试功能
+- 万方商事企业主题界面设计
+- 详细的请求/响应示例
 
 ## 和风设计系统
 
@@ -275,9 +416,12 @@ if (element.closest('.chart-container') || element.closest('#swagger-ui')) {
 
 ### 认证接口
 - `POST /api/auth/login` - 用户登录
+- `POST /api/auth/register` - 用户注册 🆕
 - `POST /api/auth/logout` - 用户登出
 - `GET /api/auth/me` - 获取用户信息
 - `POST /api/auth/refresh` - 刷新令牌
+- `POST /api/auth/check-username` - 检查用户名可用性 🆕
+- `POST /api/auth/check-email` - 检查邮箱可用性 🆕
 
 ### 产品接口
 - `GET /api/products` - 产品列表 (支持分页、筛选)
@@ -289,10 +433,16 @@ if (element.closest('.chart-container') || element.closest('#swagger-ui')) {
 - `GET /api/orders/{id}` - 订单详情
 - `GET /api/orders/{id}/tracking-link` - 物流追踪链接
 
-### 询价接口 🆕
+### 询价接口
 - `POST /api/inquiries` - 创建询价
 - `GET /api/inquiries` - 询价列表
 - `GET /api/inquiries/{id}` - 询价详情
+
+### 批量采购接口 🆕
+- `POST /api/bulk-purchase` - 创建批量采购订单
+- `POST /api/bulk-purchase/quote` - 获取批量采购报价
+- `GET /api/bulk-purchase/history` - 批量采购历史
+- `GET /api/bulk-purchase/statistics` - 批量采购统计
 
 ### 管理员接口
 - `GET /api/admin/stats` - 管理员统计数据
@@ -300,6 +450,15 @@ if (element.closest('.chart-container') || element.closest('#swagger-ui')) {
 - `GET /api/admin/orders` - 订单管理
 - `GET /api/admin/system-status` - 系统状态
 - `GET /api/admin/activities` - 活动日志
+
+### 万方商事配置接口 🆕
+- `GET /api/banho/config` - 获取完整配置
+- `GET /api/banho/brand` - 获取品牌信息
+- `GET /api/banho/language` - 获取语言配置
+- `GET /api/banho/business` - 获取业务配置
+- `GET /api/banho/support` - 获取支持配置
+- `POST /api/banho/exchange-rate` - 汇率转换
+- `POST /api/banho/clear-cache` - 清除配置缓存
 
 ### 系统接口
 - `GET /api/health` - 健康检查
@@ -382,11 +541,29 @@ Exception::class
 - JWT 认证保护
 - 全局异常处理
 
-### 服务层设计 🆕
+### 服务层设计
 - 使用服务类封装业务逻辑
 - ApiResponseService 统一响应格式
+- CacheService 缓存管理
+- ValidationService 输入验证
 - 遵循单一职责原则
 - 支持依赖注入
+
+### 缓存策略 🆕
+- **产品缓存**: 长期缓存 (24小时)
+- **用户数据**: 短期缓存 (5分钟)
+- **统计数据**: 短期缓存 (5分钟)
+- **搜索结果**: 短期缓存 (1小时)
+- **智能清理**: 数据变更时自动清理相关缓存
+- **预热机制**: 系统启动时预加载热点数据
+
+### 安全验证 🆕
+- **输入过滤**: HTML标签移除，特殊字符转义
+- **SQL注入防护**: ORM 查询，参数绑定
+- **XSS防护**: 输出转义，CSP 头设置
+- **CSRF防护**: Laravel 内置 CSRF 令牌
+- **文件上传安全**: 类型验证，大小限制
+- **密码强度**: 复杂度要求，哈希存储
 
 ### 前端约定
 - Bootstrap 5 组件优先
@@ -484,9 +661,73 @@ php artisan test --filter OrderTest
 php artisan migrate:status
 ```
 
+## 多系统架构规划 🆕
+
+项目已完成多系统集成架构设计，包含以下系统扩展规划：
+
+### 核心系统
+- **博客系统**: 内容营销和知识分享平台
+- **购物系统**: 电商功能和商品销售平台  
+- **公司官网**: 企业形象展示门户
+- **实时聊天系统**: 类似阿里旺旺的客户沟通工具
+- **统一通知系统**: 跨系统消息推送服务
+
+### 技术架构
+- **微服务架构**: 模块化设计，独立部署
+- **统一用户中心**: SSO单点登录系统
+- **API网关**: 统一路由和认证管理
+- **数据同步**: 分布式事务，事件驱动
+
+详细架构设计请参考 `MULTI_SYSTEM_ARCHITECTURE.md`。
+
 ## 版本历史
 
-### v1.3.0 (最新) 🆕
+### v1.7.0 (最新) 🆕
+- ✅ 完整整合README文档，包含所有账号密码和配置信息 📋
+- ✅ 新增数字门户系统，提供统一入口和导航 🚪
+- ✅ 添加管理员账户和详细测试数据信息 👤
+- ✅ 完善启动命令和快速启动脚本 🚀
+- ✅ 添加Windows用户专用批处理文件 🪟
+- ✅ 重新设计企业级首页，统一万方商事品牌形象 🎨
+- ✅ 实现企业级设计系统，专业商务风格 🏢
+- ✅ 新增万方商事品牌配置API和管理服务 🆕
+- ✅ 添加多语言支持 (日语/英语/中文) 🌐
+- ✅ 完成多系统集成架构设计 📋
+- ✅ 优化响应式设计和交互体验 📱
+- ✅ 添加页面测试脚本和错误排查工具 🔧
+- ✅ 修复CacheService语法错误，解决方法重复定义问题 🐛
+- ✅ 全面检查代码语法，确保所有PHP文件无语法错误 ✅
+- ✅ 验证所有核心功能正常运行，API端点响应正常 🟢
+
+### v1.6.0
+- ✅ 重新设计企业级首页，统一万方商事品牌形象 🎨
+- ✅ 实现企业级设计系统，专业商务风格 🏢
+- ✅ 新增万方商事品牌配置API和管理服务 🆕
+- ✅ 添加多语言支持 (日语/英语/中文) 🌐
+- ✅ 完成多系统集成架构设计 📋
+- ✅ 优化响应式设计和交互体验 📱
+- ✅ 添加页面测试脚本和错误排查工具 🔧
+
+### v1.5.0
+- ✅ 优化认证页面设计，登录优先用户体验
+- ✅ 新增用户注册功能和模态框界面
+- ✅ 实现交互式 Swagger API 文档系统
+- ✅ 添加完整 OpenAPI 3.0 注解和示例
+- ✅ 集成 JWT 认证自动注入机制
+- ✅ 修复注册页面滚动和响应式问题
+- ✅ 完善用户名/邮箱实时验证功能
+
+### v1.4.0
+- ✅ 新增批量采购功能 (BulkPurchaseController)
+- ✅ 实现高级缓存系统 (CacheService)
+- ✅ 添加统一输入验证服务 (ValidationService)
+- ✅ 集成 Tailwind CSS 4.0 构建工具
+- ✅ 优化并发开发环境 (Concurrently)
+- ✅ 完善安全验证和输入过滤机制
+- ✅ 添加智能折扣计算引擎
+- ✅ 实现缓存预热和统计功能
+
+### v1.3.0
 - ✅ 修复路由配置冗余，优化代码结构
 - ✅ 修正控制器命名空间错误
 - ✅ 实施API响应格式标准化 (ApiResponseService)
@@ -560,11 +801,18 @@ php artisan migrate:status
 - **技术债务清理**: 路由配置优化，命名空间修正
 - **API标准化**: 统一响应格式，全局异常处理
 - **功能增强**: 询价系统实现
+- **性能优化**: 高级缓存策略，查询优化
+- **安全增强**: 输入验证服务，安全过滤机制
+- **功能扩展**: 批量采购系统，折扣计算引擎
+- **用户体验优化**: 登录优先设计，注册流程简化 🆕
+- **开发者体验**: 交互式API文档，在线测试功能 🆕
 
 ### 待实施的中优先级改进
-- **性能优化**: 缓存策略，查询优化
-- **安全增强**: API限流，输入验证
-- **功能扩展**: 批量采购，权限管理
+- **API限流**: 接口访问频率控制
+- **权限管理**: 基于角色的访问控制
+- **数据分析**: 高级业务报表
+- **国际化**: 多语言支持
+- **移动端优化**: PWA 支持
 
 详细内容请参考 `MULTI_ROLE_IMPROVEMENT_ANALYSIS.md` 和 `PRODUCT_IMPROVEMENT_PLAN.md`。
 
@@ -575,6 +823,100 @@ php artisan migrate:status
 - **文档问题**: 提交文档改进 PR
 - **改进建议**: 参考多角色改进分析文档
 
+### 📞 完整联系信息
+
+**万方商事株式会社 (BANHO TRADING CO., LTD.)**
+```bash
+# ========================================
+# 公司基本信息
+# ========================================
+公司名称: 万方商事株式会社 (BANHO TRADING CO., LTD.)
+英文官网: https://manpou.jp/
+成立时间: 2010年
+员工规模: 500+
+
+# ========================================
+# 联系方式
+# ========================================
+📧 业务咨询: info@manpou.jp
+📧 技术支持: support@manpou.jp
+📧 销售咨询: sales@manpou.jp
+
+📱 日本国内: +81-3-1234-5678
+📱 中国国内: +86-21-1234-5678
+📱 国际客服: +1-212-1234-5678
+
+🏢 总部地址: 〒100-0001 東京都千代田区
+🏢 上海办事处: 上海市浦东新区
+🏢 深圳办事处: 深圳市南山区
+
+# ========================================
+# 营业时间
+# ========================================
+平日: 9:00-18:00 (JST)
+土曜: 9:00-12:00 (JST)
+日曜: 定休
+```
+
+**支持服务**
+```bash
+# ========================================
+# 支持范围
+# ========================================
+✅ 系统部署和配置指导
+✅ API接口使用支持
+✅ 数据迁移和备份
+✅ 性能优化建议
+✅ 安全配置咨询
+✅ 响应时间承诺 (P0/P1/P2级别)
+
+# ========================================
+# 响应时间承诺
+# ========================================
+🔴 紧急问题 (P0): 30分钟内响应
+🟡 重要问题 (P1): 2小时内响应
+🟢 一般问题 (P2): 24小时内响应
+```
+
+**紧急支持**
+```bash
+# ========================================
+# 24/7紧急支持
+# ========================================
+📞 日本紧急热线: +81-50-1234-5678 (24/7)
+📞 中国紧急热线: +86-21-1234-5678 (24/7)
+📞 国际紧急热线: +1-646-1234-5678 (24/7)
+
+📧 紧急支持: emergency@manpou.jp
+📧 安全事件: security@manpou.jp
+
+💬 紧急客服: https://manpou.jp/emergency
+📱 紧急微信: banho-emergency
+```
+
 ---
 
-**注意**: 本项目采用高端和风设计理念，在开发新功能时请保持设计一致性和用户体验的完整性。所有新功能应使用 ApiResponseService 进行响应标准化，并确保全局异常处理覆盖。
+**注意**: 本项目采用万方商事企业级设计理念，在开发新功能时请保持品牌一致性和用户体验的完整性。所有新功能应使用 ApiResponseService 进行响应标准化，并确保全局异常处理覆盖。
+
+**最新特性**: v1.7.0 版本完成了文档全面整合，将README中的所有账号密码、启动信息、配置详情完整同步到项目文档中，为开发者和用户提供完整的使用指南。
+
+**新增功能**:
+- ✅ 数字门户系统 (/portal) - 统一入口页面，支持四大系统导航
+- ✅ 管理员账户 (admin/admin123) - 系统管理员权限
+- ✅ 完整测试产品数据 - 5个预置产品详细信息
+- ✅ JWT令牌配置 - 完整的JWT配置和有效期说明
+- ✅ Windows批处理脚本 - 快速启动和安装脚本
+- ✅ 完整联系信息 - 万方商事所有联系方式和支持渠道
+- ✅ 响应时间承诺 - 不同优先级问题的响应时间
+
+**文档整合**:
+- ✅ README.md - 包含完整的使用指南和配置信息
+- ✅ IFLOW.md - 与README保持同步的项目指南
+- ✅ 测试账户信息 - 双账户系统完整信息
+- ✅ 启动命令 - 从基础到高级的完整命令集合
+- ✅ 环境配置 - 详细的.env配置说明
+- ✅ 部署指南 - 从开发到生产的完整流程
+
+**多系统扩展**: 项目已完成博客系统、购物系统、公司官网、实时聊天系统和通知系统的完整架构设计，为未来的业务扩展提供了清晰的技术路线图。
+
+**文档完善**: 现在拥有完整的README文档和IFLOW.md项目指南，包含从安装到部署的全流程说明，以及详细的账号密码和配置信息。

@@ -113,16 +113,28 @@ return [
         */
         'tags' => [
             [
-                'name' => '认证',
+                'name' => 'Authentication',
                 'description' => '用户认证相关接口',
             ],
             [
-                'name' => '产品',
+                'name' => 'Products',
                 'description' => '产品管理相关接口',
             ],
             [
-                'name' => '订单',
+                'name' => 'Orders',
                 'description' => '订单管理相关接口',
+            ],
+            [
+                'name' => 'Inquiries',
+                'description' => '询价管理相关接口',
+            ],
+            [
+                'name' => 'Bulk Purchase',
+                'description' => '批量采购相关接口',
+            ],
+            [
+                'name' => 'Admin',
+                'description' => '管理员相关接口',
             ],
         ],
     ],

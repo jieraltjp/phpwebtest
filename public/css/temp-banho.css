@@ -1,0 +1,527 @@
+/* 万方商事企业级首页设计系统 */
+:root {
+    /* 万方商事品牌色彩系统 */
+    --banho-primary: #1a365d;
+    --banho-primary-light: #2c5282;
+    --banho-primary-dark: #1a2744;
+    --banho-secondary: #d4af37;
+    --banho-secondary-light: #f4e4bc;
+    --banho-accent: #dc2626;
+    --banho-accent-light: #ef4444;
+    
+    /* 中性色彩系统 */
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    
+    /* 语义化颜色 */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+    
+    /* 字体系统 */
+    --font-family-base: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    --font-family-heading: 'Noto Serif JP', 'Hiragino Mincho', 'Yu Mincho', serif;
+    
+    /* 间距系统 */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+    
+    /* 圆角系统 */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    
+    /* 阴影系统 */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    /* 过渡动画 */
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 300ms ease-in-out;
+    --transition-slow: 500ms ease-in-out;
+}
+
+/* 基础重置 */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background-color: var(--gray-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+}
+
+/* 万方商事企业级导航 */
+.banho-navbar {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-dark) 100%);
+    box-shadow: var(--shadow-md);
+    border-bottom: 3px solid var(--banho-secondary);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.banho-navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.banho-navbar-brand {
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.banho-navbar-nav {
+    display: flex;
+    gap: var(--space-xl);
+    align-items: center;
+}
+
+.banho-navbar-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+.banho-navbar-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.banho-btn-primary {
+    background: linear-gradient(135deg, var(--banho-secondary) 0%, var(--banho-secondary-light) 100%);
+    color: var(--gray-900);
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.banho-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* 企业级首页Hero区域 */
+.banho-hero {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-dark) 50%, var(--gray-900) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 70px;
+}
+
+.banho-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.5;
+}
+
+.banho-hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    position: relative;
+    z-index: 2;
+}
+
+.banho-hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+}
+
+.banho-hero-text {
+    color: white;
+}
+
+.banho-hero-title {
+    font-family: var(--font-family-heading);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-xl);
+    background: linear-gradient(45deg, #ffffff 0%, var(--banho-secondary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.banho-hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    margin-bottom: var(--space-2xl);
+    opacity: 0.9;
+}
+
+.banho-hero-actions {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.banho-btn-hero {
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all var(--transition-base);
+}
+
+.banho-btn-hero-primary {
+    background: linear-gradient(135deg, var(--banho-secondary) 0%, var(--banho-secondary-light) 100%);
+    color: var(--gray-900);
+    box-shadow: var(--shadow-lg);
+}
+
+.banho-btn-hero-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.banho-btn-hero-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.banho-btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.banho-hero-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-2xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.banho-hero-card-title {
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--banho-primary);
+    margin-bottom: var(--space-lg);
+}
+
+/* 企业级特性区域 */
+.banho-features {
+    padding: var(--space-3xl) 0;
+    background: white;
+}
+
+.banho-features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.banho-section-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.banho-section-title {
+    font-family: var(--font-family-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--banho-primary);
+    margin-bottom: var(--space-lg);
+}
+
+.banho-section-subtitle {
+    font-size: 1.125rem;
+    color: var(--gray-600);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.banho-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-xl);
+}
+
+.banho-feature-card {
+    background: var(--gray-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl);
+    text-align: center;
+    transition: all var(--transition-base);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.banho-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--banho-primary) 0%, var(--banho-secondary) 100%);
+}
+
+.banho-feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--banho-primary);
+}
+
+.banho-feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-lg);
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-light) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.banho-feature-title {
+    font-family: var(--font-family-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--banho-primary);
+    margin-bottom: var(--space-md);
+}
+
+.banho-feature-description {
+    color: var(--gray-600);
+    line-height: 1.7;
+}
+
+/* 企业级统计数据区域 */
+.banho-stats {
+    background: linear-gradient(135deg, var(--banho-primary) 0%, var(--banho-primary-dark) 100%);
+    padding: var(--space-3xl) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.banho-stats::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+    opacity: 0.3;
+}
+
+.banho-stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    position: relative;
+    z-index: 2;
+}
+
+.banho-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-2xl);
+}
+
+.banho-stat-item {
+    text-align: center;
+    color: white;
+}
+
+.banho-stat-number {
+    font-family: var(--font-family-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--banho-secondary);
+    margin-bottom: var(--space-sm);
+    display: block;
+}
+
+.banho-stat-label {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* 企业级CTA区域 */
+.banho-cta {
+    background: var(--gray-50);
+    padding: var(--space-3xl) 0;
+    text-align: center;
+}
+
+.banho-cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.banho-cta-title {
+    font-family: var(--font-family-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--banho-primary);
+    margin-bottom: var(--space-lg);
+}
+
+.banho-cta-subtitle {
+    font-size: 1.25rem;
+    color: var(--gray-600);
+    margin-bottom: var(--space-2xl);
+    line-height: 1.7;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .banho-hero-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+    }
+    
+    .banho-hero-title {
+        font-size: 3rem;
+    }
+    
+    .banho-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .banho-navbar-container {
+        padding: 0 var(--space-md);
+    }
+    
+    .banho-navbar-nav {
+        gap: var(--space-md);
+    }
+    
+    .banho-hero {
+        min-height: 90vh;
+    }
+    
+    .banho-hero-container {
+        padding: 0 var(--space-md);
+    }
+    
+    .banho-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .banho-hero-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .banho-features-container,
+    .banho-stats-container,
+    .banho-cta-container {
+        padding: 0 var(--space-md);
+    }
+    
+    .banho-section-title {
+        font-size: 2rem;
+    }
+    
+    .banho-cta-title {
+        font-size: 2rem;
+    }
+    
+    .banho-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-lg);
+    }
+    
+    .banho-stat-number {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .banho-hero-title {
+        font-size: 2rem;
+    }
+    
+    .banho-section-title,
+    .banho-cta-title {
+        font-size: 1.75rem;
+    }
+    
+    .banho-features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .banho-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

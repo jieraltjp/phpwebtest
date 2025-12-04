@@ -5,7 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AuthController as ApiAuthController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BanhoController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\SwaggerController;
 
@@ -20,10 +22,30 @@ use App\Http\Controllers\SwaggerController;
 |
 */
 
-// 主要页面路由
+// 主要页面路由 - 原有和风首页
 Route::get('/', function () {
     return view('home');
 });
+
+// 万方商事品牌页面
+Route::get('/banho', function () {
+    return view('banho-home');
+});
+
+// 网站选择页面
+Route::get('/portal', function () {
+    return view('portal');
+});
+
+Route::get('/banho/dashboard', function () {
+    return view('banho-dashboard');
+});
+
+// 认证页面路由
+Route::get('/auth', [AuthController::class, 'showAuthPage']);
+Route::get('/login', [AuthController::class, 'showLoginPage']);
+Route::get('/register', [AuthController::class, 'showRegisterPage']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
@@ -48,8 +70,24 @@ Route::prefix('admin')->group(function () {
 });
 
 // API文档路由
-Route::get('/docs', [SwaggerController::class, 'index']);
+Route::get('/docs', function() {
+    return view('swagger.index');
+});
+Route::get('/docs/interactive', function() {
+    return view('swagger.interactive');
+});
 Route::get('/api/openapi', [SwaggerController::class, 'openApi']);
+
+// 万方商事配置API路由
+Route::prefix('api/banho')->group(function () {
+    Route::get('/config', [BanhoController::class, 'config']);
+    Route::get('/brand', [BanhoController::class, 'brand']);
+    Route::get('/language', [BanhoController::class, 'language']);
+    Route::get('/business', [BanhoController::class, 'business']);
+    Route::get('/support', [BanhoController::class, 'support']);
+    Route::post('/exchange-rate', [BanhoController::class, 'exchangeRate']);
+    Route::post('/clear-cache', [BanhoController::class, 'clearCache']);
+});
 
 // 欢迎页面（备用）
 Route::get('/welcome', function () {
@@ -77,10 +115,13 @@ Route::prefix('api')->group(function () {
 
     // 认证相关路由
     Route::prefix('auth')->group(function () {
-        Route::post('/login', [AuthController::class, 'login']);
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [AuthController::class, 'me']);
-        Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::post('/login', [ApiAuthController::class, 'login']);
+        Route::post('/register', [ApiAuthController::class, 'register']);
+        Route::post('/logout', [ApiAuthController::class, 'logout']);
+        Route::get('/me', [ApiAuthController::class, 'me']);
+        Route::post('/refresh', [ApiAuthController::class, 'refresh']);
+        Route::post('/check-username', [ApiAuthController::class, 'checkUsername']);
+        Route::post('/check-email', [ApiAuthController::class, 'checkEmail']);
     });
 
     // 产品相关路由

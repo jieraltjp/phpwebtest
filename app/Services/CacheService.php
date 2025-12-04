@@ -279,9 +279,9 @@ class CacheService
     }
 
     /**
-     * 获取缓存统计信息
+     * 获取缓存系统信息
      */
-    public static function getStats(): array
+    public static function getCacheInfo(): array
     {
         $store = app()->cache->getStore();
         
